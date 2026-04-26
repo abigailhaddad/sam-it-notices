@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-04-26T02:25Z",
-  "total_bundles": 166,
+  "generated_at": "2026-04-26T13:06Z",
+  "total_bundles": 167,
   "with_attachments": 126,
   "date_range": {
-    "from": "2025-11-07",
+    "from": "2023-02-16",
     "to": "2026-04-22"
   },
   "labels": [
@@ -12,7 +12,7 @@
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
       "count": 104,
-      "percent": 62.7,
+      "percent": 62.3,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -42,7 +42,7 @@
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
       "count": 75,
-      "percent": 45.2,
+      "percent": 44.9,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -72,7 +72,7 @@
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
       "count": 41,
-      "percent": 24.7,
+      "percent": 24.6,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -131,7 +131,7 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 81
+      "count": 82
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
@@ -177,7 +177,7 @@
     },
     {
       "name": "Special Notice",
-      "count": 35
+      "count": 36
     },
     {
       "name": "Solicitation",
@@ -199,12 +199,12 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 81,
+      "total": 82,
       "pcts": {
-        "shall_count": 54.3,
-        "has_user_vocab": 32.1,
-        "has_agile_vocab": 19.8,
-        "mentions_rtm": 6.2
+        "shall_count": 53.7,
+        "has_user_vocab": 31.7,
+        "has_agile_vocab": 19.5,
+        "mentions_rtm": 6.1
       }
     },
     {
@@ -239,6 +239,16 @@
     }
   ],
   "by_month": [
+    {
+      "month": "2023-02",
+      "total": 1,
+      "pcts": {
+        "shall_count": 0.0,
+        "has_user_vocab": 0.0,
+        "has_agile_vocab": 0.0,
+        "mentions_rtm": 0.0
+      }
+    },
     {
       "month": "2025-11",
       "total": 2,

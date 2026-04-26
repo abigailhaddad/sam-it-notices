@@ -1,20 +1,112 @@
 {
-  "2026": {
+  "2022": {
     "Fair Opportunity": {
-      "count": 2060,
-      "pct": 29.2
+      "count": 3861,
+      "pct": 45.4
     },
     "Negotiated Proposal": {
-      "count": 4040,
-      "pct": 57.3
+      "count": 1945,
+      "pct": 22.9
     },
     "Simplified Acquisition": {
-      "count": 448,
-      "pct": 6.4
+      "count": 1110,
+      "pct": 13.1
     },
     "Sole Source": {
-      "count": 504,
-      "pct": 7.1
+      "count": 1536,
+      "pct": 18.1
+    },
+    "Not Competed": {
+      "count": 48,
+      "pct": 0.6
+    }
+  },
+  "2023": {
+    "Fair Opportunity": {
+      "count": 4014,
+      "pct": 42.6
+    },
+    "Negotiated Proposal": {
+      "count": 2680,
+      "pct": 28.5
+    },
+    "Simplified Acquisition": {
+      "count": 1203,
+      "pct": 12.8
+    },
+    "Sole Source": {
+      "count": 1512,
+      "pct": 16.1
+    },
+    "Not Competed": {
+      "count": 3,
+      "pct": 0.0
+    }
+  },
+  "2024": {
+    "Fair Opportunity": {
+      "count": 4086,
+      "pct": 28.4
+    },
+    "Negotiated Proposal": {
+      "count": 7463,
+      "pct": 51.8
+    },
+    "Simplified Acquisition": {
+      "count": 1206,
+      "pct": 8.4
+    },
+    "Sole Source": {
+      "count": 1637,
+      "pct": 11.4
+    },
+    "Not Competed": {
+      "count": 10,
+      "pct": 0.1
+    }
+  },
+  "2025": {
+    "Fair Opportunity": {
+      "count": 6482,
+      "pct": 31.5
+    },
+    "Negotiated Proposal": {
+      "count": 10019,
+      "pct": 48.6
+    },
+    "Simplified Acquisition": {
+      "count": 1691,
+      "pct": 8.2
+    },
+    "Sole Source": {
+      "count": 2401,
+      "pct": 11.7
+    },
+    "Not Competed": {
+      "count": 4,
+      "pct": 0.0
+    }
+  },
+  "2026": {
+    "Fair Opportunity": {
+      "count": 3725,
+      "pct": 32.7
+    },
+    "Negotiated Proposal": {
+      "count": 5947,
+      "pct": 52.2
+    },
+    "Simplified Acquisition": {
+      "count": 661,
+      "pct": 5.8
+    },
+    "Sole Source": {
+      "count": 1050,
+      "pct": 9.2
+    },
+    "Not Competed": {
+      "count": 1,
+      "pct": 0.0
     }
   }
 }

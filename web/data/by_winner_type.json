@@ -1,32 +1,32 @@
 {
   "LPTA": {
-    "small_biz_pct": 40.4,
-    "large_biz_pct": 59.6,
-    "median_obligated_k": 256,
-    "unique_vendors": 79,
-    "top10_share_pct": 30.3,
-    "new_entrant_pct": 0.0,
-    "median_vendor_age_yrs": 20.7,
+    "small_biz_pct": 28.4,
+    "large_biz_pct": 71.6,
+    "median_obligated_k": 57,
+    "unique_vendors": 400,
+    "top10_share_pct": 29.6,
+    "new_entrant_pct": null,
+    "median_vendor_age_yrs": null,
     "median_employees": null
   },
   "TO": {
-    "small_biz_pct": 26.7,
-    "large_biz_pct": 73.3,
-    "median_obligated_k": 2586,
-    "unique_vendors": 233,
-    "top10_share_pct": 23.9,
-    "new_entrant_pct": 0.0,
-    "median_vendor_age_yrs": 19.8,
+    "small_biz_pct": 21.2,
+    "large_biz_pct": 78.8,
+    "median_obligated_k": 1280,
+    "unique_vendors": 421,
+    "top10_share_pct": 20.9,
+    "new_entrant_pct": null,
+    "median_vendor_age_yrs": null,
     "median_employees": null
   },
   "O": {
-    "small_biz_pct": 18.9,
-    "large_biz_pct": 81.1,
-    "median_obligated_k": 714,
-    "unique_vendors": 426,
-    "top10_share_pct": 20.5,
-    "new_entrant_pct": 0.5,
-    "median_vendor_age_yrs": 21.7,
+    "small_biz_pct": 12.6,
+    "large_biz_pct": 87.4,
+    "median_obligated_k": 177,
+    "unique_vendors": 1515,
+    "top10_share_pct": 10.8,
+    "new_entrant_pct": null,
+    "median_vendor_age_yrs": null,
     "median_employees": null
   }
 }
