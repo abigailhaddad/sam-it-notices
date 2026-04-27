@@ -1,51 +1,7 @@
 /**
- * Client-side filter manager — adapted from usajobs_historical's
- * ServerSideFilterManager for use with static JSON data and Chart.js.
- *
- * Key differences from the original:
- * - No DataTable / no server AJAX calls
- * - Filter options come from a pre-loaded object (not /api/filter_options)
- * - onFilterChange callback drives chart re-renders
+ * Client-side filter manager for static JSON data + Chart.js re-renders.
+ * escapeHtml, getCleanURL, createModal, closeModal, showToast provided by shared-ui/shared.js.
  */
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-    return String(text).replace(/[&<>"']/g, m => map[m]);
-}
-
-function getCleanURL() {
-    const url = new URL(window.location);
-    if (url.pathname.endsWith('/index.html'))
-        url.pathname = url.pathname.replace(/\/index\.html$/, '/');
-    return url;
-}
-
-function createModal(options = {}) {
-    const overlay = document.createElement('div');
-    overlay.className = 'filter-modal ' + (options.className || '');
-    const inner = document.createElement('div');
-    inner.innerHTML = options.content || '';
-    while (inner.firstChild) overlay.appendChild(inner.firstChild);
-    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay); });
-    const escHandler = e => { if (e.key === 'Escape') { closeModal(overlay); document.removeEventListener('keydown', escHandler); } };
-    document.addEventListener('keydown', escHandler);
-    document.body.appendChild(overlay);
-    return overlay;
-}
-
-function closeModal(modal) {
-    if (modal && modal.parentNode) modal.parentNode.removeChild(modal);
-}
-
-function showToast(message, isError = false) {
-    const toast = document.createElement('div');
-    toast.className = 'toast' + (isError ? ' toast-error' : ' toast-success');
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    requestAnimationFrame(() => toast.classList.add('show'));
-    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2000);
-}
 
 class FilterManager {
     /**

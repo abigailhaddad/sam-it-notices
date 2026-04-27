@@ -1,0 +1,16 @@
+/* procurement-methods color theme — overrides for shared-ui */
+:root {
+    --color-primary:        #1B4332;
+    --color-accent:         #1B4332;
+    --color-danger:         #DC2626;
+    --color-bg:             #F8FAFA;
+    --color-bg-alt:         #FFFFFF;
+
+    /* Green accent-light/lighter won't auto-derive well from dark green */
+    --color-accent-light:   #2D6A4F;
+    --color-accent-lighter: rgba(27, 67, 50, 0.1);
+
+    --font-sans:    'Inter', -apple-system, sans-serif;
+    --font-display: 'Inter', -apple-system, sans-serif;
+    --font-mono:    'JetBrains Mono', monospace;
+}

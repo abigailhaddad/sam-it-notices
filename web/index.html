@@ -7,11 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="shared/shared.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abigailhaddad/shared-ui@main/shared.css" />
+  <link rel="stylesheet" href="shared/theme.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/abigailhaddad/shared-ui@main/shared.js"></script>
   <style>
     .site-container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 
@@ -825,11 +827,7 @@ async function loadAll() {
   }
 }
 
-function escapeHtml(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
+// escapeHtml provided by shared-ui/shared.js
 
 // ── RFP browser ─────────────────────────────────────────────────────────────
 const RFP_LABEL_META = {
@@ -1490,6 +1488,77 @@ function openRfpModal(bundle, detail, query) {
     if (contracts.length > 20) {
       html += `<div style="font-size:0.78rem;color:var(--color-text-muted);">… and ${contracts.length - 20} more</div>`;
     }
+  }
+
+  // Labor categories
+  const lcats = (detail || bundle).lcats;
+  if (lcats && lcats.length) {
+    const hasRates = lcats.some(e => e.rate_usd != null);
+    html += `<details style="margin-top:1rem;">
+      <summary class="rfp-modal-section-title" style="cursor:pointer;user-select:none;list-style:none;display:flex;align-items:center;gap:0.4rem;">
+        <span>▶</span> Labor Categories (${lcats.length})
+      </summary>
+      <div style="margin-top:0.5rem;overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+          <thead>
+            <tr style="background:var(--color-surface);text-align:left;">
+              <th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Labor Category</th>
+              ${hasRates ? '<th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);white-space:nowrap;">Ceiling Rate</th>' : ''}
+              <th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">CLIN</th>
+              <th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${lcats.map(e => `
+            <tr style="border-bottom:1px solid var(--color-border);">
+              <td style="padding:0.3rem 0.5rem;">${escapeHtml(e.name)}</td>
+              ${hasRates ? `<td style="padding:0.3rem 0.5rem;white-space:nowrap;">${e.rate_usd != null ? '$' + e.rate_usd.toFixed(2) + (e.rate_per ? '/' + e.rate_per : '') : '—'}</td>` : ''}
+              <td style="padding:0.3rem 0.5rem;">${escapeHtml(e.clin || '—')}</td>
+              <td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.75rem;">${escapeHtml(e.source)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </details>`;
+  }
+
+  // Key personnel / labor categories
+  const personnel = (detail || bundle).personnel;
+  if (personnel && personnel.length) {
+    const hasYears = personnel.some(r => r.min_years_experience != null);
+    const hasEdu   = personnel.some(r => r.education);
+    const hasCerts = personnel.some(r => r.certifications && r.certifications.length);
+    html += `<details style="margin-top:1rem;">
+      <summary class="rfp-modal-section-title" style="cursor:pointer;user-select:none;list-style:none;display:flex;align-items:center;gap:0.4rem;">
+        <span>▶</span> Key Personnel / Labor Categories (${personnel.length})
+      </summary>
+      <div style="margin-top:0.5rem;overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+          <thead>
+            <tr style="background:var(--color-surface);text-align:left;">
+              <th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Role</th>
+              ${hasYears ? '<th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);white-space:nowrap;">Min Yrs</th>' : ''}
+              ${hasEdu   ? '<th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Education</th>' : ''}
+              ${hasCerts ? '<th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Certs</th>' : ''}
+              <th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${personnel.map(r => `
+            <tr style="border-bottom:1px solid var(--color-border);">
+              <td style="padding:0.3rem 0.5rem;">
+                ${r.is_key_personnel ? '<span title="Key Personnel" style="color:var(--color-gold);margin-right:0.3rem;">★</span>' : ''}
+                <strong>${escapeHtml(r.title)}</strong>${r.level ? ` <span style="color:var(--color-text-muted);font-size:0.75rem;">(${escapeHtml(r.level)})</span>` : ''}
+              </td>
+              ${hasYears ? `<td style="padding:0.3rem 0.5rem;text-align:center;">${r.min_years_experience != null ? r.min_years_experience + '+' : '—'}</td>` : ''}
+              ${hasEdu   ? `<td style="padding:0.3rem 0.5rem;">${escapeHtml(r.education || '—')}</td>` : ''}
+              ${hasCerts ? `<td style="padding:0.3rem 0.5rem;">${(r.certifications||[]).map(c => escapeHtml(c)).join(', ') || '—'}</td>` : ''}
+              <td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.75rem;">${escapeHtml(r.brief_description || '')}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </details>`;
   }
 
   // Full extracted text
