@@ -1,54 +1,54 @@
 {
   "overall": {
-    "total": 65435,
-    "terminated": 44,
-    "terminated_pct": 0.07
+    "total": 216892,
+    "terminated": 77,
+    "terminated_pct": 0.04
   },
   "by_eval_method": [
     {
       "method": "Fair Opportunity",
       "label": "Fair Opportunity (IDIQ/GWAC)",
-      "total": 22168,
-      "terminated": 33,
-      "terminated_pct": 0.15,
-      "convenience": 33,
-      "default_cause": 0,
+      "total": 144555,
+      "terminated": 59,
+      "terminated_pct": 0.04,
+      "convenience": 58,
+      "default_cause": 1,
       "default_cause_pct": 0.0
     },
     {
       "method": "Negotiated Proposal",
       "label": "Negotiated Proposal",
-      "total": 28054,
-      "terminated": 0,
-      "terminated_pct": 0.0,
-      "convenience": 0,
+      "total": 34769,
+      "terminated": 3,
+      "terminated_pct": 0.01,
+      "convenience": 3,
       "default_cause": 0,
       "default_cause_pct": 0.0
     },
     {
       "method": "Simplified Acquisition",
       "label": "Simplified Acquisition",
-      "total": 5871,
-      "terminated": 1,
+      "total": 21368,
+      "terminated": 4,
       "terminated_pct": 0.02,
-      "convenience": 1,
+      "convenience": 4,
       "default_cause": 0,
       "default_cause_pct": 0.0
     },
     {
       "method": "Sole Source",
       "label": "Sole Source",
-      "total": 8136,
-      "terminated": 9,
-      "terminated_pct": 0.11,
-      "convenience": 9,
+      "total": 14284,
+      "terminated": 10,
+      "terminated_pct": 0.07,
+      "convenience": 10,
       "default_cause": 0,
       "default_cause_pct": 0.0
     },
     {
       "method": "Not Competed",
       "label": "Not Competed",
-      "total": 66,
+      "total": 88,
       "terminated": 0,
       "terminated_pct": 0.0,
       "convenience": 0,
@@ -58,9 +58,9 @@
     {
       "method": "Unknown",
       "label": "Unknown",
-      "total": 1140,
+      "total": 1828,
       "terminated": 1,
-      "terminated_pct": 0.09,
+      "terminated_pct": 0.05,
       "convenience": 1,
       "default_cause": 0,
       "default_cause_pct": 0.0

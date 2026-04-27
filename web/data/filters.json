@@ -29,12 +29,20 @@
     {
       "value": 541512,
       "label": "Systems Design (541512)"
+    },
+    {
+      "value": 541519,
+      "label": "Other Computer Services (541519)"
     }
   ],
   "departments": [
     {
       "value": "Agency for International Development",
       "label": "Agency for International Development"
+    },
+    {
+      "value": "American Battle Monuments Commission",
+      "label": "American Battle Monuments Commission"
     },
     {
       "value": "Committee for Purchase from People Who Are Blind or Severely Disabled",
@@ -203,6 +211,10 @@
     {
       "value": "National Endowment for the Arts",
       "label": "National Endowment for the Arts"
+    },
+    {
+      "value": "National Endowment for the Humanities",
+      "label": "National Endowment for the Humanities"
     },
     {
       "value": "National Labor Relations Board",

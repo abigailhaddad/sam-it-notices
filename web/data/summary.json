@@ -1,14 +1,14 @@
 {
-  "total_contracts": 65435,
-  "total_obligated_b": 326.8,
-  "has_tradeoff_pct": 8.1,
-  "lpta_pct": 15.5,
-  "tradeoff_pct": 23.5,
+  "total_contracts": 216892,
+  "total_obligated_b": 486.1,
+  "has_tradeoff_pct": 4.9,
+  "lpta_pct": 13.9,
+  "tradeoff_pct": 22.8,
   "has_contract_type_pct": 100.0,
-  "staff_aug_pct": 10.8,
-  "ffp_pct": 75.2,
+  "staff_aug_pct": 4.9,
+  "ffp_pct": 89.5,
   "fy_min": 2022,
   "fy_max": 2026,
-  "unique_vendors": 8888,
-  "unique_agencies": 57
+  "unique_vendors": 13506,
+  "unique_agencies": 59
 }

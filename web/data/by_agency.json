@@ -1,122 +1,152 @@
 [
   {
     "agency": "Department of State",
-    "total": 121,
-    "lpta": 60.0,
-    "lpta_pct": 49.6
+    "total": 223,
+    "lpta": 111.0,
+    "lpta_pct": 49.8
   },
   {
     "agency": "Social Security Administration",
-    "total": 25,
-    "lpta": 9.0,
-    "lpta_pct": 36.0
+    "total": 46,
+    "lpta": 16.0,
+    "lpta_pct": 34.8
+  },
+  {
+    "agency": "U.S. Agency for Global Media",
+    "total": 24,
+    "lpta": 7.0,
+    "lpta_pct": 29.2
   },
   {
     "agency": "Environmental Protection Agency",
-    "total": 43,
-    "lpta": 12.0,
-    "lpta_pct": 27.9
+    "total": 92,
+    "lpta": 24.0,
+    "lpta_pct": 26.1
+  },
+  {
+    "agency": "Small Business Administration",
+    "total": 21,
+    "lpta": 5.0,
+    "lpta_pct": 23.8
   },
   {
     "agency": "Department of Health and Human Services",
-    "total": 771,
-    "lpta": 180.0,
-    "lpta_pct": 23.3
+    "total": 1519,
+    "lpta": 315.0,
+    "lpta_pct": 20.7
   },
   {
-    "agency": "Department of Defense",
-    "total": 1718,
-    "lpta": 285.0,
-    "lpta_pct": 16.6
+    "agency": "Federal Communications Commission",
+    "total": 21,
+    "lpta": 4.0,
+    "lpta_pct": 19.0
   },
   {
-    "agency": "National Aeronautics and Space Administration",
-    "total": 152,
-    "lpta": 25.0,
-    "lpta_pct": 16.4
+    "agency": "National Archives and Records Administration",
+    "total": 31,
+    "lpta": 5.0,
+    "lpta_pct": 16.1
   },
   {
     "agency": "Department of Justice",
-    "total": 228,
-    "lpta": 35.0,
-    "lpta_pct": 15.4
-  },
-  {
-    "agency": "Department of Commerce",
-    "total": 193,
-    "lpta": 25.0,
-    "lpta_pct": 13.0
+    "total": 445,
+    "lpta": 66.0,
+    "lpta_pct": 14.8
   },
   {
     "agency": "Department of Transportation",
-    "total": 140,
-    "lpta": 18.0,
-    "lpta_pct": 12.9
-  },
-  {
-    "agency": "Department of Agriculture",
-    "total": 298,
-    "lpta": 35.0,
-    "lpta_pct": 11.7
-  },
-  {
-    "agency": "Department of the Interior",
-    "total": 237,
-    "lpta": 27.0,
-    "lpta_pct": 11.4
+    "total": 282,
+    "lpta": 38.0,
+    "lpta_pct": 13.5
   },
   {
     "agency": "Department of Energy",
-    "total": 36,
-    "lpta": 4.0,
-    "lpta_pct": 11.1
+    "total": 105,
+    "lpta": 14.0,
+    "lpta_pct": 13.3
   },
   {
-    "agency": "Department of the Treasury",
-    "total": 237,
-    "lpta": 22.0,
+    "agency": "Department of Defense",
+    "total": 3535,
+    "lpta": 468.0,
+    "lpta_pct": 13.2
+  },
+  {
+    "agency": "Department of Agriculture",
+    "total": 527,
+    "lpta": 69.0,
+    "lpta_pct": 13.1
+  },
+  {
+    "agency": "National Aeronautics and Space Administration",
+    "total": 271,
+    "lpta": 34.0,
+    "lpta_pct": 12.5
+  },
+  {
+    "agency": "Department of Commerce",
+    "total": 357,
+    "lpta": 36.0,
+    "lpta_pct": 10.1
+  },
+  {
+    "agency": "Department of Education",
+    "total": 75,
+    "lpta": 7.0,
     "lpta_pct": 9.3
   },
   {
     "agency": "Department of Veterans Affairs",
-    "total": 331,
-    "lpta": 27.0,
-    "lpta_pct": 8.2
+    "total": 724,
+    "lpta": 63.0,
+    "lpta_pct": 8.7
+  },
+  {
+    "agency": "Department of the Interior",
+    "total": 482,
+    "lpta": 40.0,
+    "lpta_pct": 8.3
   },
   {
     "agency": "Consumer Product Safety Commission",
-    "total": 26,
-    "lpta": 2.0,
-    "lpta_pct": 7.7
+    "total": 36,
+    "lpta": 3.0,
+    "lpta_pct": 8.3
   },
   {
-    "agency": "General Services Administration",
-    "total": 167,
-    "lpta": 11.0,
-    "lpta_pct": 6.6
+    "agency": "Department of the Treasury",
+    "total": 467,
+    "lpta": 37.0,
+    "lpta_pct": 7.9
   },
   {
     "agency": "Department of Homeland Security",
-    "total": 313,
-    "lpta": 19.0,
-    "lpta_pct": 6.1
+    "total": 609,
+    "lpta": 46.0,
+    "lpta_pct": 7.6
+  },
+  {
+    "agency": "General Services Administration",
+    "total": 306,
+    "lpta": 23.0,
+    "lpta_pct": 7.5
+  },
+  {
+    "agency": "Nuclear Regulatory Commission",
+    "total": 20,
+    "lpta": 1.0,
+    "lpta_pct": 5.0
   },
   {
     "agency": "Office of Personnel Management",
-    "total": 35,
-    "lpta": 2.0,
-    "lpta_pct": 5.7
+    "total": 70,
+    "lpta": 3.0,
+    "lpta_pct": 4.3
   },
   {
-    "agency": "Department of Education",
-    "total": 35,
+    "agency": "Department of Housing and Urban Development",
+    "total": 37,
     "lpta": 1.0,
-    "lpta_pct": 2.9
-  },
-  {
-    "agency": "National Science Foundation",
-    "total": 22,
-    "lpta": 0.0,
-    "lpta_pct": 0.0
+    "lpta_pct": 2.7
   }
 ]

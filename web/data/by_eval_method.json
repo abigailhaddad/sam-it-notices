@@ -2,46 +2,46 @@
   {
     "method": "Fair Opportunity",
     "label": "Fair Opportunity (IDIQ/GWAC)",
-    "count": 22168,
-    "pct": 34.5,
-    "obligated_b": 221.61,
-    "obligated_pct": 68.5,
-    "median_k": 1031
+    "count": 144555,
+    "pct": 67.2,
+    "obligated_b": 342.85,
+    "obligated_pct": 71.1,
+    "median_k": 64
   },
   {
     "method": "Negotiated Proposal",
     "label": "Negotiated Proposal",
-    "count": 28054,
-    "pct": 43.6,
-    "obligated_b": 53.18,
-    "obligated_pct": 16.4,
-    "median_k": 15
+    "count": 34769,
+    "pct": 16.2,
+    "obligated_b": 69.48,
+    "obligated_pct": 14.4,
+    "median_k": 13
   },
   {
     "method": "Simplified Acquisition",
     "label": "Simplified Acquisition",
-    "count": 5871,
-    "pct": 9.1,
-    "obligated_b": 8.03,
-    "obligated_pct": 2.5,
-    "median_k": 70
+    "count": 21368,
+    "pct": 9.9,
+    "obligated_b": 15.0,
+    "obligated_pct": 3.1,
+    "median_k": 46
   },
   {
     "method": "Sole Source",
     "label": "Sole Source",
-    "count": 8136,
-    "pct": 12.7,
-    "obligated_b": 40.43,
-    "obligated_pct": 12.5,
-    "median_k": 450
+    "count": 14284,
+    "pct": 6.6,
+    "obligated_b": 54.09,
+    "obligated_pct": 11.2,
+    "median_k": 286
   },
   {
     "method": "Not Competed",
     "label": "Not Competed",
-    "count": 66,
-    "pct": 0.1,
-    "obligated_b": 0.17,
+    "count": 88,
+    "pct": 0.0,
+    "obligated_b": 0.53,
     "obligated_pct": 0.1,
-    "median_k": 107
+    "median_k": 102
   }
 ]
