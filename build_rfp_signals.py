@@ -28,14 +28,146 @@ import re
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 load_dotenv()
 
 OUT_SIGNALS = Path("web/data/rfp_signals.json")
 OUT_BUNDLES = Path("web/data/rfp_bundles.json")
 R2_PREFIX   = "it_rfps/bundles/"
+
+
+# ── LCAT extraction ──────────────────────────────────────────────────────────
+
+class LcatEntry(BaseModel):
+    name: str
+    rate_usd: Optional[float] = None
+    rate_per: Optional[str] = None   # "hour" | "year" | "month"
+    clin: Optional[str] = None
+    source: str
+
+
+_RE_DOLLAR_RATE = re.compile(
+    r'\$\s*([\d,]+(?:\.\d{1,2})?)\s*(?:/\s*|\bper\s+)?(hr|hour|yr|year|annum|month|day)\b',
+    re.IGNORECASE,
+)
+_RE_CLIN = re.compile(r'\bCLIN\s*(\d{3,4}[A-Z]{0,2})\b', re.IGNORECASE)
+# Header row signals that a table is a labor category table
+_RE_LCAT_HEADER = re.compile(
+    r'labor\s+categor|lcat\b|labor\s+title|position\s+title|job\s+title|personnel\s+categor',
+    re.IGNORECASE,
+)
+# Cell values to skip as LCAT names
+_RE_SKIP_CELL = re.compile(
+    r'^\s*(?:\$|\d|n/?a\b|tbd\b|varies\b|total\b|ffp\b|t&m\b|cpff\b|base\b|option\b'
+    r'|labor\s+hour|time\s+and\s+material|quantity\b|unit\s+price\b|unit\b|rate\b'
+    r'|description\b|labor\s+cat|ceiling\b|period\b|hours?\b)',
+    re.IGNORECASE,
+)
+# Words that disqualify a string as a job title
+_RE_NOT_A_TITLE = re.compile(
+    r'\b(option|exercised|amended|after|before|contract|shall|period|fiscal|year|'
+    r'invoice|payment|deliverable|award|performance|government|contractor)\b',
+    re.IGNORECASE,
+)
+
+
+def _parse_rate(dollar_str: str, unit: str) -> tuple[float, str]:
+    amount = float(dollar_str.replace(',', ''))
+    u = unit.lower()
+    per = 'hour' if u in ('hr', 'hour') else 'year' if u in ('yr', 'year', 'annum') else u
+    return amount, per
+
+
+def _is_lcat_name(s: str) -> bool:
+    s = s.strip()
+    # Length: 3–60 chars, 2–6 words
+    words = s.split()
+    if not (3 <= len(s) <= 60) or not (2 <= len(words) <= 7):
+        return False
+    if _RE_SKIP_CELL.match(s):
+        return False
+    if _RE_NOT_A_TITLE.search(s):
+        return False
+    # Must contain at least one letter; reject mostly-numeric strings
+    if not re.search(r'[A-Za-z]{2,}', s):
+        return False
+    # Hourly labor rates: $15–$500/hr is plausible; reject obvious outliers with units
+    return True
+
+
+def _extract_from_lcat_table(lines: list[str], src: str, seen: set[str]) -> list[LcatEntry]:
+    """Extract from a contiguous block of pipe-delimited rows under a known LCAT header."""
+    results: list[LcatEntry] = []
+    for line in lines:
+        if '|' not in line or not _RE_DOLLAR_RATE.search(line):
+            continue
+        cells = [c.strip() for c in line.split('|') if c.strip()]
+        rate_m = next((m for c in cells for m in [_RE_DOLLAR_RATE.search(c)] if m), None)
+        if not rate_m:
+            continue
+        amount, per = _parse_rate(rate_m.group(1), rate_m.group(2))
+        # Sanity check: hourly $10–$500, annual $20k–$600k
+        if per == 'hour' and not (10 <= amount <= 500):
+            continue
+        if per == 'year' and not (20_000 <= amount <= 600_000):
+            continue
+        clin_m = _RE_CLIN.search(line)
+        name = next(
+            (c for c in cells if _is_lcat_name(c) and not _RE_DOLLAR_RATE.search(c)),
+            None,
+        )
+        if name and name.lower() not in seen:
+            results.append(LcatEntry(name=name, rate_usd=amount, rate_per=per,
+                                     clin=clin_m.group(1) if clin_m else None, source=src))
+            seen.add(name.lower())
+    return results
+
+
+def extract_lcats(attachments: list[dict]) -> list[dict]:
+    results: list[LcatEntry] = []
+    seen: set[str] = set()
+
+    for att in attachments:
+        text = att.get('text') or ''
+        src  = att.get('filename') or 'attachment'
+        if not text:
+            continue
+
+        lines = text.splitlines()
+
+        # Strategy 1: find LCAT header rows, then parse the following table rows
+        for i, line in enumerate(lines):
+            if '|' in line and _RE_LCAT_HEADER.search(line):
+                # Extract up to 40 subsequent pipe rows as the table body
+                table_lines = [l for l in lines[i+1:i+41] if '|' in l]
+                results.extend(_extract_from_lcat_table(table_lines, src, seen))
+
+        # Strategy 2: "Labor Category: <name>" immediately followed/preceded by a rate
+        for m in re.finditer(
+            r'(?:labor\s+categor(?:y|ies)|lcat)\s*[:\-]\s*([^\n\$\|]{4,55})',
+            text, re.IGNORECASE,
+        ):
+            name = m.group(1).strip().rstrip(',;:')
+            if not _is_lcat_name(name) or name.lower() in seen:
+                continue
+            # Look for a rate within 200 chars after the label
+            window = text[m.end(): m.end() + 200]
+            rate_m = _RE_DOLLAR_RATE.search(window)
+            if not rate_m:
+                continue
+            amount, per = _parse_rate(rate_m.group(1), rate_m.group(2))
+            if per == 'hour' and not (10 <= amount <= 500):
+                continue
+            clin_m = _RE_CLIN.search(text[max(0, m.start()-50): m.end()])
+            results.append(LcatEntry(name=name, rate_usd=amount, rate_per=per,
+                                     clin=clin_m.group(1) if clin_m else None, source=src))
+            seen.add(name.lower())
+
+    return [e.model_dump() for e in results]
 
 # Regexes kept in sync with rfp_text_pipeline.classify_bundle_text. If the
 # pipeline's patterns change we update here too — they're intentionally
@@ -126,7 +258,26 @@ def extract_snippets(attachments: list[dict], description: str) -> dict:
     return {k: v for k, v in out.items() if v}
 
 
-def aggregate(bundles):
+def _load_personnel_cache_r2(s3, bucket: str) -> dict[str, list]:
+    """Load all cached personnel extractions from R2. Returns {notice_id: [roles]}."""
+    cache: dict[str, list] = {}
+    try:
+        p = s3.get_paginator("list_objects_v2")
+        for page in p.paginate(Bucket=bucket, Prefix="it_rfps/personnel/"):
+            for o in page.get("Contents", []):
+                nid = o["Key"].removeprefix("it_rfps/personnel/").removesuffix(".json")
+                try:
+                    body = s3.get_object(Bucket=bucket, Key=o["Key"])["Body"].read()
+                    data = json.loads(body)
+                    cache[nid] = data.get("roles") or []
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    return cache
+
+
+def aggregate(bundles, personnel_cache: dict | None = None):
     total = 0
     with_att = 0
     label_bool_hits = Counter()
@@ -141,7 +292,7 @@ def aggregate(bundles):
     # by_month: "YYYY-MM" -> {total, label_key -> hit_count}
     month_stats: dict[str, dict] = {}
 
-    NAICS_KEEP = {"541511", "541512"}
+    NAICS_KEEP = {"541511", "541512", "541519", "518210"}
 
     for b in bundles:
         m = b.get("metadata") or {}
@@ -210,8 +361,12 @@ def aggregate(bundles):
         if month_key:
             month_stats.setdefault(month_key, {"total": 0, **{k: 0 for k, _, _ in LABELS}})["total"] += 1
 
+        lcats = extract_lcats(atts)
+        nid   = b.get("notice_id") or ""
+        personnel = (personnel_cache or {}).get(nid) or None
+
         bundle_rows.append({
-            "notice_id":          b.get("notice_id"),
+            "notice_id":          nid,
             "solicitation_number": m.get("solicitation_number"),
             "title":              m.get("title"),
             "type":               m.get("type"),
@@ -223,6 +378,8 @@ def aggregate(bundles):
             "label_hits":         label_hits,
             "attachment_count":   len(atts),
             "snippets":           snippets,
+            "lcats":              lcats or None,
+            "personnel":          personnel,
             "search_text":        full_text[:15000],
         })
 
@@ -284,8 +441,23 @@ def main():
                     help="Read bundles from a local directory instead of R2")
     args = ap.parse_args()
 
+    personnel_cache = None
+    if not args.local:
+        import boto3
+        from botocore.config import Config
+        s3 = boto3.client(
+            "s3",
+            endpoint_url=f"https://{os.environ['CF_R2_ACCOUNT_ID']}.r2.cloudflarestorage.com",
+            aws_access_key_id=os.environ["CF_R2_ACCESS_KEY_ID"],
+            aws_secret_access_key=os.environ["CF_R2_SECRET_ACCESS_KEY"],
+            config=Config(signature_version="s3v4"), region_name="auto",
+        )
+        bucket = os.environ["CF_R2_BUCKET"]
+        personnel_cache = _load_personnel_cache_r2(s3, bucket)
+        print(f"Loaded {len(personnel_cache)} personnel extractions from R2")
+
     bundles = iter_bundles_local(args.local) if args.local else iter_bundles_r2()
-    signals, bundle_rows = aggregate(bundles)
+    signals, bundle_rows = aggregate(bundles, personnel_cache)
 
     OUT_SIGNALS.parent.mkdir(parents=True, exist_ok=True)
     OUT_SIGNALS.write_text(json.dumps(signals, indent=2))
