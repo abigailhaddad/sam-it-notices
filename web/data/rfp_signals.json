@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-04-27T01:09Z",
-  "total_bundles": 205,
-  "with_attachments": 150,
+  "generated_at": "2026-04-27T02:02Z",
+  "total_bundles": 206,
+  "with_attachments": 151,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-04-24"
+    "to": "2026-04-26"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 127,
-      "percent": 62.0,
+      "count": 128,
+      "percent": 62.1,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,8 +41,8 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 91,
-      "percent": 44.4,
+      "count": 92,
+      "percent": 44.7,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 49,
-      "percent": 23.9,
+      "count": 50,
+      "percent": 24.3,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -102,7 +102,7 @@
       "label": "Mentions an RTM",
       "description": "requirements traceability matrix",
       "count": 12,
-      "percent": 5.9,
+      "percent": 5.8,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -158,15 +158,15 @@
       "count": 4
     },
     {
+      "name": "TREASURY, DEPARTMENT OF THE",
+      "count": 4
+    },
+    {
       "name": "STATE, DEPARTMENT OF",
       "count": 4
     },
     {
       "name": "TRANSPORTATION, DEPARTMENT OF",
-      "count": 3
-    },
-    {
-      "name": "GENERAL SERVICES ADMINISTRATION",
       "count": 3
     }
   ],
@@ -177,7 +177,7 @@
     },
     {
       "name": "Special Notice",
-      "count": 43
+      "count": 44
     },
     {
       "name": "Solicitation",
@@ -411,11 +411,11 @@
     },
     {
       "month": "2026-04",
-      "total": 126,
+      "total": 127,
       "pcts": {
-        "shall_count": 63.5,
-        "has_user_vocab": 45.2,
-        "has_agile_vocab": 22.2,
+        "shall_count": 63.8,
+        "has_user_vocab": 45.7,
+        "has_agile_vocab": 22.8,
         "mentions_rtm": 8.7
       }
     }
