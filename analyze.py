@@ -69,6 +69,8 @@ SET_ASIDE_LABELS = {
 NAICS_LABELS = {
     541511: "Custom Programming (541511)",
     541512: "Systems Design (541512)",
+    541519: "Other Computer Services (541519)",
+    518210: "Data Processing/Hosting (518210)",
 }
 
 SMALL_BIZ_SET_ASIDES = {"SBA","8A","8AN","SDVOSBC","SDVOSBS","WOSB","HZC","HZS","SBP","ESB","ISBEE"}

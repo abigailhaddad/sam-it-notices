@@ -89,8 +89,10 @@ DEFAULT_NOTICE_TYPES = {
     # Justification + Fair Opportunity / Limited Sources Justification live in
     # the pull_usaspending repo instead — they're about non-competition
     # rationale on awarded contracts, not RFP language.
+    # "Award Notice" excluded by default (high volume, different content).
+    # Add via --include-award-notices to capture CLIN/labor-category attachments.
 }
-DEFAULT_NAICS_PREFIXES = ("541511", "541512")
+DEFAULT_NAICS_PREFIXES = ("541511", "541512", "541519", "518210")
 DEFAULT_LOOKBACK_DAYS  = 180
 
 API_KEY = os.environ.get("SAM_API_KEY")
@@ -181,7 +183,7 @@ def _mmddyyyy(d: date) -> str:
     return d.strftime("%m/%d/%Y")
 
 
-NAICS_CODES = ["541511", "541512"]
+NAICS_CODES = ["541511", "541512", "541519", "518210"]
 
 
 def search_page(
@@ -403,14 +405,21 @@ _RE_USER  = re.compile(
     r"\b(end[- ]?users?|stakeholders?|user\s+research|user\s+needs?|user\s+experience|ux)\b",
     re.IGNORECASE,
 )
+_RE_LCAT  = re.compile(
+    r"\b(labor\s+categor(y|ies)|lcat|hourly\s+(rate|ceiling)|ceiling\s+(rate|price)|loaded\s+(rate|labor)|bill(ing)?\s+rate)\b",
+    re.IGNORECASE,
+)
+_RE_CLIN  = re.compile(r"\bCLIN\s*\d{3,4}\b|\bline\s+item\s+(no\.?|number)?\s*\d{3,4}\b", re.IGNORECASE)
 
 
 def classify_bundle_text(text: str) -> dict:
     return {
-        "mentions_rtm":     bool(_RE_RTM.search(text)),
-        "shall_count":      len(_RE_SHALL.findall(text)),
-        "has_agile_vocab":  bool(_RE_AGILE.search(text)),
-        "has_user_vocab":   bool(_RE_USER.search(text)),
+        "mentions_rtm":         bool(_RE_RTM.search(text)),
+        "shall_count":          len(_RE_SHALL.findall(text)),
+        "has_agile_vocab":      bool(_RE_AGILE.search(text)),
+        "has_user_vocab":       bool(_RE_USER.search(text)),
+        "has_labor_categories": bool(_RE_LCAT.search(text)),
+        "clin_count":           len(_RE_CLIN.findall(text)),
     }
 
 
@@ -470,6 +479,8 @@ def main() -> None:
                     help="Cap on search pages this run (default: 50 = up to 50,000 opps scanned)")
     ap.add_argument("--naics-prefix", nargs="+", default=list(DEFAULT_NAICS_PREFIXES))
     ap.add_argument("--types", nargs="+", default=sorted(DEFAULT_NOTICE_TYPES))
+    ap.add_argument("--include-award-notices", action="store_true",
+                    help="Also process Award Notice attachments (for CLIN/labor-category extraction)")
     ap.add_argument("--dry-run", action="store_true",
                     help="List window + first page of matches; no downloads")
     ap.add_argument("--summary-file", default="")
@@ -521,6 +532,8 @@ def main() -> None:
         start_offset = 0
 
     notice_types = set(args.types)
+    if args.include_award_notices:
+        notice_types.add("Award Notice")
     naics_prefixes = tuple(args.naics_prefix)
 
     print(f"Window: {posted_from} → {posted_to}")

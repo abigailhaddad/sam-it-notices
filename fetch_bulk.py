@@ -37,7 +37,7 @@ CHECKPOINT_DIR = Path("data/bulk_checkpoints")
 OUTPUT_CSV     = Path("data/contracts_bulk.csv")
 
 # NAICS prefixes to keep — all computer/IT services
-NAICS_PREFIXES = ("541511", "541512")  # custom programming + systems design
+NAICS_PREFIXES = ("541511", "541512", "541519", "518210")  # custom programming + systems design + other IT + data processing
 
 def _get_latest_datestamp(fallback: str = "20260306") -> str:
     """Fetch the archive index page and find the most recent datestamp."""

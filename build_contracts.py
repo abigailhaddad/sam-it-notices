@@ -20,7 +20,7 @@ TRADEOFF_CSV = Path("data/tradeoff_lookup.csv")
 OUTPUT_CSV   = Path("data/contracts_raw.csv")
 
 # Only keep the NAICS codes we care about
-NAICS_KEEP = {"541511", "541512"}
+NAICS_KEEP = {"541511", "541512", "541519", "518210"}
 
 
 def classify_eval_method(df: pd.DataFrame) -> pd.Series:
@@ -231,8 +231,8 @@ def main():
     for code, n in tc.items():
         print(f"  {code:5s}  {n:>6,}")
     print(f"Total obligated:     ${out['obligated'].sum()/1e9:.1f}B")
-    print(f"NAICS 541511:        {(out['naics_code']=='541511').sum():,}")
-    print(f"NAICS 541512:        {(out['naics_code']=='541512').sum():,}")
+    for ncode in ["541511", "541512", "541519", "518210"]:
+        print(f"NAICS {ncode}:        {(out['naics_code']==ncode).sum():,}")
     print(f"Unique vendors:      {out['recipient_uei'].nunique():,}")
     print(f"Unique agencies:     {out['department'].nunique():,}")
 
