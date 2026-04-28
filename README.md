@@ -9,39 +9,26 @@ for custom software, systems design, and related IT services.
 
 ## What this is
 
-This project pulls federal contract data from public sources and classifies every IT services
-contract by how it was evaluated:
+This project runs a daily pipeline that downloads solicitation attachments from SAM.gov,
+extracts the text, and builds a browsable table of notices with vocabulary signals and
+personnel requirements pulled from the documents.
 
-- **LPTA** (Lowest Price Technically Acceptable)
-- **Best-Value Tradeoff**
-- **Fair Opportunity** (IDIQ/GWAC task orders)
-- **Negotiated Proposal** (full and open competition)
-- **Simplified Acquisition**
-- **Sole Source**
+The dashboard is a searchable, filterable notice browser for federal IT solicitations
+(NAICS 541511/512). Each notice shows extracted attachment text, regex-based vocabulary
+signals (shall clauses, agile vocabulary, user-centered language, RTM mentions), and
+GPT-extracted personnel role requirements.
 
-It also runs a daily pipeline that downloads solicitation attachments from SAM.gov, extracts
-the text, and builds a browsable table of notices with vocabulary signals and personnel
-requirements pulled from the documents.
+NAICS scope: **541511** (Custom Programming), **541512** (Systems Design).
 
-NAICS scope: **541511** (Custom Programming), **541512** (Systems Design),
-**541519** (Other Computer Services), **518210** (Data Processing/Hosting).
+The repo also contains a contracts analysis pipeline (USASpending, Tango API, LPTA/tradeoff
+codes) that is not yet wired to the dashboard UI.
 
 ---
 
 ## Dashboard
 
-The dashboard has two main sections:
+The dashboard is a searchable table of SAM.gov solicitation notices:
 
-**Contract Analysis** — charts and filters for FY2022–present:
-- Evaluation method breakdown (count and dollars)
-- Trend over time by fiscal year
-- Vendor age and new-entrant rates
-- Agency-level LPTA rates
-- Engagement type (deliverable/FFP vs. staff-aug/T&M)
-- Small business set-aside rates
-- Top vendors table
-
-**Notice Browser** — searchable table of SAM.gov solicitation notices:
 - Filterable by notice type, department, NAICS, set-aside, date range, and vocabulary signals
 - Badges showing what data is available for each notice (personnel roles, vocabulary signals, full text)
 - Modal with extracted attachment text, keyword snippets, and GPT-extracted personnel roles
@@ -51,7 +38,11 @@ The dashboard has two main sections:
 
 ## How it works
 
-### Contracts pipeline
+### Contracts pipeline (not yet wired to the dashboard UI)
+
+The repo contains a full contracts analysis pipeline using USASpending and Tango API data.
+This code exists and runs, but the resulting charts and tables are not currently displayed
+in the dashboard.
 
 ```
 fetch_bulk.py           USASpending bulk archives → data/contracts_bulk.csv
@@ -70,7 +61,7 @@ fetch_protests.py       Tango API → data/protests_matched.csv
                         (GAO bid protests matched to IT solicitations)
 
 analyze.py              contracts_raw + SAM + protests → web/data/*.json
-                        (dashboard data files committed for Vercel)
+                        (produces dashboard JSONs — not currently rendered in the UI)
 ```
 
 ### Notice browser pipeline
@@ -122,24 +113,25 @@ flowchart TD
 pip install -r requirements.txt
 
 # API keys in .env
-echo "TANGO_API_KEY=your_key" >> .env
-echo "SAM_API_KEY=your_key"   >> .env
+echo "SAM_API_KEY=your_key"    >> .env
 echo "OPENAI_API_KEY=your_key" >> .env  # for extract_personnel.py
 
-# Contracts pipeline (USASpending needs no key)
-python3 fetch_bulk.py --fy 2026
-python3 fetch_tradeoff.py        # rate-limited; run daily
-python3 build_contracts.py
-python3 enrich_sam.py            # optional: vendor age
-python3 fetch_protests.py        # optional: GAO protests
-python3 analyze.py
-
-# Notice browser (R2 credentials required)
+# Notice browser (R2 credentials required) — this powers the dashboard
 python3 build_rfp_signals.py     # pull bundles from R2, build rfp_bundles.json
 python3 extract_personnel.py     # optional: GPT personnel extraction
 
 # View locally
 cd web && python3 -m http.server 8000
+
+# --- Contracts pipeline (not yet wired to dashboard UI) ---
+# Requires additional API keys: TANGO_API_KEY
+# echo "TANGO_API_KEY=your_key" >> .env
+# python3 fetch_bulk.py --fy 2026      # USASpending needs no key
+# python3 fetch_tradeoff.py            # rate-limited; run daily
+# python3 build_contracts.py
+# python3 enrich_sam.py                # optional: vendor age
+# python3 fetch_protests.py            # optional: GAO protests
+# python3 analyze.py
 ```
 
 All scripts are checkpoint/resume-safe — re-run after rate limits or interruptions.
@@ -208,9 +200,7 @@ Labels are computed by regex on extracted attachment text:
 | Workflow | Schedule | What it does |
 |----------|----------|-------------|
 | `rfp_text.yml` | Daily 00:05 UTC | Fetch SAM.gov solicitation attachments → R2 |
-| `fetch_tradeoff.yml` | Daily 10:00 UTC | Fetch LPTA/tradeoff codes from Tango API |
-| `fetch.yml` | Monthly | Download USASpending bulk archives |
-| `rebuild.yml` | After tradeoff fetch | Rebuild dashboard JSONs; data tests gate the commit |
+| `fetch_tradeoff.yml` | Daily 10:00 UTC | Fetch LPTA/tradeoff codes from Tango API (contracts pipeline, not yet in dashboard) |
 
 R2 (Cloudflare) stores pipeline state and bundles between runs.
 

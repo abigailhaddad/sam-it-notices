@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="shared/shared.css" />
   <link rel="stylesheet" href="shared/theme.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/abigailhaddad/shared-ui@main/shared.js"></script>
@@ -25,10 +24,6 @@
     }
     .narrative a { color: var(--color-accent); }
     .narrative strong { color: var(--color-text); }
-
-    .chart-card { margin-bottom: 1.5rem; }
-    .chart-card canvas { max-height: 340px; }
-    .chart-card.chart-tall canvas { max-height: 420px; }
 
     .chart-note {
       font-size: 0.78rem;
@@ -671,76 +666,24 @@
   <section id="panel-methodology" style="margin-top:2.5rem;">
     <h2 class="section-header">How it works</h2>
 
-    <p class="narrative">Two parallel pipelines feed this dashboard. <a href="https://github.com/abigailhaddad/procurement-methods#methodology" target="_blank">Full methodology on GitHub ↗</a></p>
+    <p class="narrative">A daily pipeline pulls solicitation notices from SAM.gov, extracts attachment text, and classifies vocabulary signals. <a href="https://github.com/abigailhaddad/procurement-methods" target="_blank">Source on GitHub ↗</a></p>
 
     <!-- Pipeline flow -->
-    <div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin:1.25rem 0;align-items:flex-start;">
-      <div style="flex:1;min-width:260px;">
-        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin-bottom:0.5rem;">Contracts pipeline</div>
-        <div style="display:flex;flex-direction:column;gap:0.25rem;font-size:0.8125rem;">
-          <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-accent);border-radius:0 0.25rem 0.25rem 0;"><strong>USASpending bulk</strong> → contract details, dollars, agencies</div>
-          <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ fetch_bulk.py</div>
-          <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-accent);border-radius:0 0.25rem 0.25rem 0;"><strong>Tango API (FPDS)</strong> → LPTA / tradeoff codes</div>
-          <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ fetch_tradeoff.py + build_contracts.py</div>
-          <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-accent);border-radius:0 0.25rem 0.25rem 0;"><strong>SAM.gov extract</strong> → vendor age, registration date</div>
-          <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ enrich_sam.py + analyze.py</div>
-          <div style="padding:0.4rem 0.6rem;background:var(--color-accent);color:#fff;border-radius:0.25rem;font-weight:600;">contracts_raw.csv → dashboard charts</div>
-        </div>
-      </div>
-      <div style="flex:1;min-width:260px;">
-        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin-bottom:0.5rem;">RFP browser pipeline</div>
-        <div style="display:flex;flex-direction:column;gap:0.25rem;font-size:0.8125rem;">
-          <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-gold);border-radius:0 0.25rem 0.25rem 0;"><strong>SAM.gov API</strong> → solicitation notices, attachment text</div>
-          <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ rfp_text_pipeline.py (daily cron)</div>
-          <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-gold);border-radius:0 0.25rem 0.25rem 0;"><strong>Regex classifier</strong> → shall / user / agile / RTM labels</div>
-          <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ build_rfp_signals.py + GPT-4o-mini personnel extraction</div>
-          <div style="padding:0.4rem 0.6rem;background:var(--color-gold);color:#1B4332;border-radius:0.25rem;font-weight:600;">rfp_bundles.json → RFP browser</div>
-        </div>
+    <div style="margin:1.25rem 0;">
+      <div style="display:flex;flex-direction:column;gap:0.25rem;font-size:0.8125rem;max-width:480px;">
+        <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-gold);border-radius:0 0.25rem 0.25rem 0;"><strong>SAM.gov API</strong> → solicitation notices, attachment text</div>
+        <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ rfp_text_pipeline.py (daily cron, 00:05 UTC)</div>
+        <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-gold);border-radius:0 0.25rem 0.25rem 0;"><strong>Regex classifier</strong> → shall / user / agile / RTM labels</div>
+        <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ build_rfp_signals.py + gpt-5.4-mini personnel extraction</div>
+        <div style="padding:0.4rem 0.6rem;background:var(--color-gold);color:#1B4332;border-radius:0.25rem;font-weight:600;">rfp_bundles.json → notice browser</div>
       </div>
     </div>
 
-    <!-- Eval fields -->
-    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin:1.5rem 0 0.5rem;"><code>eval_method</code> — USASpending competition fields (always populated)</div>
-    <table style="width:100%;font-size:0.8125rem;border-collapse:collapse;margin-bottom:1.25rem;">
-      <thead>
-        <tr style="border-bottom:2px solid var(--color-border);">
-          <th style="text-align:left;padding:0.4rem 0.75rem 0.4rem 0;font-weight:600;">Category</th>
-          <th style="text-align:left;padding:0.4rem 0;font-weight:600;">Rule</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom:1px solid var(--color-border);"><td style="padding:0.4rem 0.75rem 0.4rem 0;font-weight:600;">Fair Opportunity</td><td style="padding:0.4rem 0;"><code>solicitation_procedures = "MAFO"</code></td></tr>
-        <tr style="border-bottom:1px solid var(--color-border);"><td style="padding:0.4rem 0.75rem 0.4rem 0;font-weight:600;">Negotiated Proposal</td><td style="padding:0.4rem 0;"><code>extent_competed</code> in (A, D) + <code>NP</code></td></tr>
-        <tr style="border-bottom:1px solid var(--color-border);"><td style="padding:0.4rem 0.75rem 0.4rem 0;font-weight:600;">Simplified Acquisition</td><td style="padding:0.4rem 0;"><code>extent_competed</code> in (F, G)</td></tr>
-        <tr style="border-bottom:1px solid var(--color-border);"><td style="padding:0.4rem 0.75rem 0.4rem 0;font-weight:600;">Sole Source</td><td style="padding:0.4rem 0;"><code>solicitation_procedures = "SSS"</code></td></tr>
-        <tr><td style="padding:0.4rem 0.75rem 0.4rem 0;font-weight:600;">Not Competed</td><td style="padding:0.4rem 0;"><code>extent_competed</code> in (B, C), not sole source</td></tr>
-      </tbody>
-    </table>
-    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin-bottom:0.5rem;"><code>tradeoff_code</code> — Tango API / FPDS (partial coverage, grows daily)</div>
-    <table style="width:100%;font-size:0.8125rem;border-collapse:collapse;">
-      <thead>
-        <tr style="border-bottom:2px solid var(--color-border);">
-          <th style="text-align:left;padding:0.4rem 0.75rem 0.4rem 0;font-weight:600;">Value</th>
-          <th style="text-align:left;padding:0.4rem 0;font-weight:600;">Meaning</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom:1px solid var(--color-border);"><td style="padding:0.4rem 0.75rem 0.4rem 0;"><code>LPTA</code></td><td style="padding:0.4rem 0;">Lowest Price Technically Acceptable</td></tr>
-        <tr style="border-bottom:1px solid var(--color-border);"><td style="padding:0.4rem 0.75rem 0.4rem 0;"><code>TO</code></td><td style="padding:0.4rem 0;">Best-Value Tradeoff</td></tr>
-        <tr style="border-bottom:1px solid var(--color-border);"><td style="padding:0.4rem 0.75rem 0.4rem 0;"><code>O</code></td><td style="padding:0.4rem 0;">Other</td></tr>
-        <tr><td style="padding:0.4rem 0.75rem 0.4rem 0;"><code>null</code></td><td style="padding:0.4rem 0;">Not yet fetched or not reported (~40–60% of awards)</td></tr>
-      </tbody>
-    </table>
-
-    <p style="font-size:0.75rem;color:var(--color-text-muted);margin-top:1rem;line-height:1.6;">
-      <strong>Coverage caveat:</strong> Tango tradeoff codes are contractor-reported and blank for ~40–60% of awards. Only ~5% of contracts currently have LPTA or Best-Value Tradeoff codes — coverage grows daily via GitHub Actions (100 calls/day free tier). Remaining contracts are classified using USASpending competition fields, which are less specific. Vendor age and new-entrant fields require SAM.gov enrichment and are blank for contracts not yet processed.
-    </p>
   </section>
 
   <!-- Footer -->
   <footer class="site-footer">
-    <p>Data: <a href="https://www.usaspending.gov" target="_blank">USASpending</a> &middot;
-       <a href="https://govcon.dev" target="_blank">Tango API</a> (FPDS) &middot;
+    <p>Data: <a href="https://sam.gov" target="_blank">SAM.gov</a> &middot;
        NAICS <span class="naics-scope">541511/512</span> &middot;
        <a href="https://github.com/abigailhaddad/procurement-methods" target="_blank">Source code</a></p>
   </footer>
@@ -748,52 +691,14 @@
 </div><!-- /site-container -->
 
 <script>
-// ── Palette ─────────────────────────────────────────────────────────────────
-const C = { grid: '#D1E4D1', tick: '#6B7280', bg: '#1B4332', bgText: '#F8FAFA' };
-
-const EM = {
-  'LPTA':                   { bg: '#2D6A4F', bgL: 'rgba(45,106,79,0.75)' },
-  'Best-Value Tradeoff':    { bg: '#D4A03C', bgL: 'rgba(212,160,60,0.75)' },
-  'Fair Opportunity':       { bg: '#4A90D9', bgL: 'rgba(74,144,217,0.75)' },
-  'Negotiated Proposal':    { bg: '#7B68AE', bgL: 'rgba(123,104,174,0.75)' },
-  'Simplified Acquisition': { bg: '#E07B53', bgL: 'rgba(224,123,83,0.75)' },
-  'Sole Source':            { bg: '#C0392B', bgL: 'rgba(192,57,43,0.75)' },
-  'Not Competed':           { bg: '#7A6E62', bgL: 'rgba(122,110,98,0.55)' },
-  'Unknown':                { bg: '#BBBBBB', bgL: 'rgba(187,187,187,0.55)' },
-};
-
-Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
-Chart.defaults.color = C.tick;
-
-function tt() {
-  return { backgroundColor:C.bg, titleColor:C.bgText, bodyColor:C.bgText,
-           borderColor:'#3D2B1F', borderWidth:1, cornerRadius:6, padding:10 };
-}
-
 let DATA = {};
-let CHARTS = {};
-
-function mkChart(id, config) {
-  if (CHARTS[id]) CHARTS[id].destroy();
-  CHARTS[id] = new Chart(document.getElementById(id).getContext('2d'), config);
-}
 
 async function loadAll() {
-  const files = ['summary','by_eval_method','by_eval_method_fy','by_agency','top_vendors',
-                 'by_vendor_age','protests','filters','rfp_signals','rfp_bundles'];
+  const files = ['rfp_signals', 'rfp_bundles'];
   const results = await Promise.all(
     files.map(f => fetch(`data/${f}.json`).then(r => r.json()).catch(() => null))
   );
   files.forEach((f, i) => { DATA[f] = results[i]; });
-
-  // Populate dynamic contract FY range
-  const fyKeys = Object.keys(DATA.by_eval_method_fy || {}).map(Number).filter(Boolean).sort();
-  if (fyKeys.length) {
-    const fyText = fyKeys.length === 1
-      ? `FY${fyKeys[0]}`
-      : `FY${fyKeys[0]}–${fyKeys[fyKeys.length - 1]}`;
-    document.querySelectorAll('.fy-range-contracts, .fy-range').forEach(el => { el.textContent = fyText; });
-  }
 
   // Populate dynamic RFP date range from actual bundle posted dates
   const rfpDates = (DATA.rfp_bundles || [])
@@ -833,19 +738,14 @@ let rfpDetailByNid = {};
 let rfpDT = null;
 
 // ── Shareable URL ─────────────────────────────────────────────────────────────
-const URL_FIELD_MAP = {
-  q:         { field: 'text',      label: 'Full text search',      type: 'text' },
-  title:     { field: 'title',     label: 'Title',                 type: 'text' },
-  date:      { field: 'date',      label: 'Posted Date',           type: 'text' },
-  type:      { field: 'type',      label: 'Notice Type',           type: 'multiselect' },
-  dept:      { field: 'dept',      label: 'Department',            type: 'multiselect' },
-  naics:     { field: 'naics',     label: 'NAICS',                 type: 'multiselect' },
-  sa:        { field: 'sa',        label: 'Set-aside',             type: 'multiselect' },
-  label:     { field: 'label',     label: 'Label',                 type: 'multiselect' },
-  contracts:  { field: 'contracts',  label: 'Has matched contracts', type: 'multiselect' },
-  evalmethod: { field: 'evalmethod', label: 'Eval method',           type: 'multiselect' },
-  tradeoff:   { field: 'tradeoff',   label: 'Tradeoff code',         type: 'multiselect' },
-};
+// Derived from FILTER_COLS so URL params stay in sync with active filters automatically.
+// 'q' is the URL key for full-text search (field: 'text'); 'label' maps the labels column.
+const URL_FIELD_MAP = Object.fromEntries(
+  FILTER_COLS.map(c => {
+    const urlKey = c.field === 'text' ? 'q' : c.field === 'labels' ? 'label' : c.field;
+    return [urlKey, { field: c.field === 'labels' ? 'label' : c.field, label: c.label, type: c.type }];
+  })
+);
 
 function updateURLWithFilters() {
   const params = new URLSearchParams();
@@ -1044,7 +944,14 @@ const RFP_COLS = [
   { key: 'data',    title: 'Data',       orderable: false,
     render: b => makeDataBadges(b),
     filterable: 'multiselect', filterLabel: 'Data available',
-    staticOptions: ['Personnel roles', 'Vocabulary signals', 'Full text', 'LCATs'] },
+    getVals: b => {
+      const v = [];
+      if (b.personnel && b.personnel.length) v.push('Personnel roles');
+      if (b.label_hits && Object.keys(b.label_hits).length) v.push('Vocabulary signals');
+      if ((b.search_text || '').trim().length > 300 && !(b.search_text || '').trim().startsWith('http')) v.push('Full text');
+      if (b.lcats && b.lcats.length) v.push('LCATs');
+      return v;
+    } },
   { key: 'sam',     title: 'SAM.gov',    orderable: false,
     render: b => makeSamLink(b) },
   { key: 'docs',    title: 'Docs',       className: 'num',
