@@ -738,14 +738,17 @@ let rfpDetailByNid = {};
 let rfpDT = null;
 
 // ── Shareable URL ─────────────────────────────────────────────────────────────
-// Derived from FILTER_COLS so URL params stay in sync with active filters automatically.
-// 'q' is the URL key for full-text search (field: 'text'); 'label' maps the labels column.
-const URL_FIELD_MAP = Object.fromEntries(
-  FILTER_COLS.map(c => {
-    const urlKey = c.field === 'text' ? 'q' : c.field === 'labels' ? 'label' : c.field;
-    return [urlKey, { field: c.field === 'labels' ? 'label' : c.field, label: c.label, type: c.type }];
-  })
-);
+const URL_FIELD_MAP = {
+  q:     { field: 'text',   label: 'Full text search', type: 'text' },
+  title: { field: 'title',  label: 'Title',            type: 'text' },
+  date:  { field: 'date',   label: 'Posted Date',      type: 'daterange' },
+  type:  { field: 'type',   label: 'Notice Type',      type: 'multiselect' },
+  dept:  { field: 'dept',   label: 'Department',       type: 'multiselect' },
+  naics: { field: 'naics',  label: 'NAICS',            type: 'multiselect' },
+  sa:    { field: 'sa',     label: 'Set-aside',        type: 'multiselect' },
+  label: { field: 'label',  label: 'Label',            type: 'multiselect' },
+  data:  { field: 'data',   label: 'Data available',   type: 'multiselect' },
+};
 
 function updateURLWithFilters() {
   const params = new URLSearchParams();
