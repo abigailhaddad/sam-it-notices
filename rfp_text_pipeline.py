@@ -92,7 +92,19 @@ DEFAULT_NOTICE_TYPES = {
     # "Award Notice" excluded by default (high volume, different content).
     # Add via --include-award-notices to capture CLIN/labor-category attachments.
 }
-DEFAULT_NAICS_PREFIXES = ("541511", "541512", "541519", "518210")
+DEFAULT_NAICS_PREFIXES = (
+    "541511",  # Custom Computer Programming Services
+    "541512",  # Computer Systems Design Services
+    "541513",  # Computer Facilities Management Services
+    "541519",  # Other Computer Related Services
+    "518210",  # Data Processing, Hosting, and Related Services
+    "541330",  # Engineering Services
+    "541611",  # Administrative Management & General Management Consulting
+    "541618",  # Other Management Consulting Services
+    "541690",  # Other Scientific & Technical Consulting
+    "541715",  # Research & Development in Physical, Eng & Life Sciences
+    "541990",  # All Other Professional, Scientific & Technical Services
+)
 DEFAULT_LOOKBACK_DAYS  = 180
 
 API_KEY = os.environ.get("SAM_API_KEY")
@@ -183,9 +195,6 @@ def _mmddyyyy(d: date) -> str:
     return d.strftime("%m/%d/%Y")
 
 
-NAICS_CODES = ["541511", "541512", "541519", "518210"]
-
-
 def search_page(
     session: requests.Session,
     posted_from: date,
@@ -235,6 +244,7 @@ def iter_opps_in_window(
     posted_from: date,
     posted_to: date,
     max_calls: int,
+    naics_codes: list[str],
     start_offset: int = 0,
 ) -> Iterator[tuple[dict, int]]:
     """Yield each opp + page number across all NAICS codes and year-sized chunks.
@@ -255,7 +265,7 @@ def iter_opps_in_window(
     calls = 0
     page = 0
     chunks = _year_chunks(posted_from, posted_to)
-    for ncode in NAICS_CODES:
+    for ncode in naics_codes:
         for chunk_from, chunk_to in chunks:
             chunk_key = (ncode, str(chunk_from), str(chunk_to))
             if chunk_key in done_chunks:
@@ -544,10 +554,11 @@ def main() -> None:
 
     if args.dry_run:
         session = requests.Session()
-        opps, total = search_page(session, posted_from, posted_to, start_offset)
+        probe_ncode = naics_prefixes[0]
+        opps, total = search_page(session, posted_from, posted_to, start_offset, probe_ncode)
         match = [o for o in opps if _naics_matches((o.get("naicsCode") or ""), naics_prefixes)
                  and o.get("type") in notice_types]
-        print(f"\n--dry-run: first page = {len(opps)} opps of {total:,} in window; "
+        print(f"\n--dry-run: first page (NAICS {probe_ncode}) = {len(opps)} opps of {total:,} in window; "
               f"{len(match)} match NAICS+type; {sum(1 for o in match if o.get('noticeId') not in processed)} unseen.")
         return
 
@@ -558,7 +569,7 @@ def main() -> None:
     sam_error: str | None = None
 
     try:
-        for opp, page_no in iter_opps_in_window(session, posted_from, posted_to, args.max_api_calls, start_offset=start_offset):
+        for opp, page_no in iter_opps_in_window(session, posted_from, posted_to, args.max_api_calls, list(naics_prefixes), start_offset=start_offset):
             scanned += 1
             pages = page_no
             nid = opp.get("noticeId")

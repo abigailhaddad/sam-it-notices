@@ -4,10 +4,20 @@ A daily pipeline that downloads SAM.gov solicitation attachments, extracts the
 text, runs regex + GPT signal passes, and renders a filterable notice browser
 at `sam-it-notices.vercel.app`.
 
-NAICS scope: pipelines filter to NAICS prefix `541` (so 541511, 541512, 541519
-appear in bundles). Header copy and the dashboard title still emphasize
-541511/541512 (Custom Programming + Systems Design) since those are the
-primary IT services codes.
+## NAICS scope
+
+Two profiles, both expressed as a NAICS list passed to `--naics-prefix`:
+
+- **Daily cron (narrow, 4 codes)** — keeps quota use under 10 API calls/day:
+  `541511 541512 541519 518210`
+- **Manual backfill / wide ad-hoc (full 11 codes)** — workflow_dispatch default:
+  `541511 541512 541513 541519 518210 541330 541611 541618 541690 541715 541990`
+
+NAICS list ↔ chunk-completion state are tied: `completed_chunks.json` keys are
+`(ncode, chunk_from, chunk_to)`, so adding a new NAICS code to the list will
+trigger fresh queries for that code without re-doing already-drained chunks
+for the existing codes. `processed.json` provides per-noticeId dedup as a
+second backstop.
 
 ## Pipeline (`rfp_text_pipeline.py`)
 
