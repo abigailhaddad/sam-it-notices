@@ -850,28 +850,15 @@ function colSearch(col, vals, exact = true) {
 
 function applyFiltersToTable() {
   if (!rfpDT) return;
-
-  // Global text search (full-text column)
+  // Global text search hits only the _text column (the only searchable:true column).
+  // All other filtering is handled by the ext.search plugin below.
   rfpDT.search(getFilterText());
-
-  // Column-specific searches
-  const titleVals = getFilterValues('title');
-  rfpDT.column(COL.title).search(titleVals.length ? titleVals.join('|') : '', true, false);
-  rfpDT.column(COL.date).search('', true, false); // date range handled in custom search
-  colSearch(COL.type,  getFilterValues('type'));
-  colSearch(COL.dept,  getFilterValues('dept'));
-  colSearch(COL.naics, getFilterValues('naics'));
-  colSearch(COL.sa,    getFilterValues('sa'), false);
-
   rfpDT.draw();
   renderFilterChips();
-
-  // Sync card active states
   const lbls = getActiveLabels();
   document.querySelectorAll('.rfp-card-clickable').forEach(c => {
     c.classList.toggle('active', lbls.has(c.dataset.chip));
   });
-
   updateURLWithFilters();
 }
 
@@ -1120,21 +1107,42 @@ function closeFilterModal() {
 }
 
 // Custom DataTables search for label, date, and data-available filters
+// All column filtering goes here — column().search() has no effect on
+// columns with searchable:false, so we use ext.search for everything.
 $.fn.dataTable.ext.search.push(function(settings, data) {
   if (settings.nTable.id !== 'rfpTable') return true;
+
+  // Label filter (from card clicks — checks rendered chip HTML)
   const lbls = getActiveLabels();
   if (lbls.size && ![...lbls].every(l => data[COL.labels].includes(l))) return false;
-  const dateFilters = activeFilters.filter(f => f.field === 'date' && f.type === 'daterange');
-  for (const f of dateFilters) {
+
+  // Date range
+  for (const f of activeFilters.filter(f => f.field === 'date')) {
     const d = data[COL.date] || '';
     if (f.from && d < f.from) return false;
-    if (f.to && d > f.to) return false;
+    if (f.to   && d > f.to)   return false;
   }
-  const dataVals = activeFilters.filter(f => f.field === 'data').flatMap(f => f.values || []);
-  if (dataVals.length) {
-    const cell = data[COL._text] || '';
-    if (!dataVals.every(v => cell.includes(v))) return false;
+
+  // Data available filter (checks _text which includes makeDataSearchText output)
+  const dataVals = getFilterValues('data');
+  if (dataVals.length && !dataVals.every(v => (data[COL._text] || '').includes(v))) return false;
+
+  // Column multiselect filters — exact match by default, substring for set-aside
+  const colChecks = [
+    { field: 'title', col: COL.title, exact: true },
+    { field: 'type',  col: COL.type,  exact: true },
+    { field: 'dept',  col: COL.dept,  exact: true },
+    { field: 'naics', col: COL.naics, exact: true },
+    { field: 'sa',    col: COL.sa,    exact: false },
+  ];
+  for (const { field, col, exact } of colChecks) {
+    const vals = getFilterValues(field);
+    if (!vals.length) continue;
+    const cell = (data[col] || '').toLowerCase();
+    const hit = vals.some(v => exact ? cell === v.toLowerCase() : cell.includes(v.toLowerCase()));
+    if (!hit) return false;
   }
+
   return true;
 });
 
