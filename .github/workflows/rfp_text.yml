@@ -67,7 +67,7 @@ jobs:
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
-          if [ "${{ inputs.include_award_notices }}" != "false" ]; then
+          if [ "${{ inputs.include_award_notices }}" = "true" ]; then
             ARGS="$ARGS --include-award-notices"
           fi
           python rfp_text_pipeline.py $ARGS
@@ -75,11 +75,11 @@ jobs:
       # Rebuild even when the pipeline exited 1 (e.g. SAM 429 mid-window) —
       # bundles already pushed to R2 this run should still make it to the dashboard.
       - name: Rebuild dashboard JSONs from R2
-        if: always() && inputs.dry_run != 'true'
+        if: always() && inputs.dry_run != true
         run: python build_rfp_signals.py
 
       - name: Commit updated dashboard JSONs
-        if: always() && inputs.dry_run != 'true'
+        if: always() && inputs.dry_run != true
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
