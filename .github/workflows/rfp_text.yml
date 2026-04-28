@@ -57,6 +57,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install Playwright browser
+        if: inputs.dry_run != true
+        run: python -m playwright install --with-deps chromium
+
       - name: Run RFP text pipeline
         run: |
           ARGS="--max-api-calls ${{ inputs.max_api_calls || '50' }} --summary-file $GITHUB_STEP_SUMMARY"
@@ -86,6 +90,10 @@ jobs:
       - name: Run data tests
         if: always() && inputs.dry_run != true
         run: python -m pytest tests/data/ -v --tb=short
+
+      - name: Run frontend tests
+        if: always() && inputs.dry_run != true
+        run: python -m pytest tests/frontend/ -v --tb=short
 
       - name: Commit updated dashboard JSONs
         if: always() && inputs.dry_run != true

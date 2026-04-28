@@ -1,104 +1,54 @@
 # How the Federal Government Buys IT Services
 
-An open analysis of federal IT procurement — how agencies compete and evaluate contracts
-for custom software, systems design, and related IT services.
+A daily pipeline + browsable dashboard of federal IT solicitations. We pull
+attachments from SAM.gov, extract the text, run a regex/GPT signal pass, and
+serve a filterable notice browser.
 
-**[View the dashboard →](https://procurement-methods.vercel.app)**
+**[View the dashboard →](https://sam-it-notices.vercel.app)**
 
----
-
-## What this is
-
-This project runs a daily pipeline that downloads solicitation attachments from SAM.gov,
-extracts the text, and builds a browsable table of notices with vocabulary signals and
-personnel requirements pulled from the documents.
-
-The dashboard is a searchable, filterable notice browser for federal IT solicitations
-(NAICS 541511/512). Each notice shows extracted attachment text, regex-based vocabulary
-signals (shall clauses, agile vocabulary, user-centered language, RTM mentions), and
-GPT-extracted personnel role requirements.
-
-NAICS scope: **541511** (Custom Programming), **541512** (Systems Design).
-
-The repo also contains a contracts analysis pipeline (USASpending, Tango API, LPTA/tradeoff
-codes) that is not yet wired to the dashboard UI.
+NAICS scope: **541511** (Custom Programming) and **541512** (Systems Design).
+The text pipeline also keeps related codes under prefix `541` (e.g. 541519).
 
 ---
 
 ## Dashboard
 
-The dashboard is a searchable table of SAM.gov solicitation notices:
+Searchable table of SAM.gov notices:
 
-- Filterable by notice type, department, NAICS, set-aside, date range, and vocabulary signals
-- Badges showing what data is available for each notice (personnel roles, vocabulary signals, full text)
-- Modal with extracted attachment text, keyword snippets, and GPT-extracted personnel roles
-- Sourced from daily pipeline pulling ~200–400 notices/day across target NAICS codes
+- Filter by notice type, department, NAICS, set-aside, date range, and
+  vocabulary signals
+- Per-notice badges showing what data is available (personnel roles,
+  vocabulary signals, full extracted text, LCATs)
+- Modal with extracted attachment text, keyword snippets, and GPT-extracted
+  personnel roles / labor categories
+
+Filters are also shareable via URL — every chip you add is reflected in the
+query string (e.g. `?dept=DEPT+OF+DEFENSE&naics=541512`).
 
 ---
 
-## How it works
-
-### Contracts pipeline (not yet wired to the dashboard UI)
-
-The repo contains a full contracts analysis pipeline using USASpending and Tango API data.
-This code exists and runs, but the resulting charts and tables are not currently displayed
-in the dashboard.
+## Pipeline
 
 ```
-fetch_bulk.py           USASpending bulk archives → data/contracts_bulk.csv
-                        (contract details: dollars, agencies, vendors, competition fields)
+rfp_text_pipeline.py    Daily cron (00:05 UTC). SAM.gov opportunities API →
+                        R2 (it_rfps/bundles/). pypdf / python-docx / openpyxl
+                        text extraction; regex label classifier.
 
-fetch_tradeoff.py       Tango API (FPDS) → data/tradeoff_lookup.csv
-                        (LPTA vs. best-value tradeoff codes — not in USASpending)
+extract_personnel.py    GPT-based extraction of personnel roles / LCATs from
+                        new bundles. Caches to R2 (it_rfps/personnel/).
 
-build_contracts.py      Join bulk + tradeoff → data/contracts_raw.csv
-                        (classifies each contract into an eval_method)
-
-enrich_sam.py           SAM.gov monthly extract → data/sam_lookup.csv
-                        (vendor age, registration date, employee count)
-
-fetch_protests.py       Tango API → data/protests_matched.csv
-                        (GAO bid protests matched to IT solicitations)
-
-analyze.py              contracts_raw + SAM + protests → web/data/*.json
-                        (produces dashboard JSONs — not currently rendered in the UI)
+build_rfp_signals.py    Reads bundles + personnel cache from R2, writes
+                        web/data/rfp_signals.json + rfp_bundles.json. These
+                        are the only files the dashboard fetches.
 ```
-
-### Notice browser pipeline
-
-```
-rfp_text_pipeline.py    Daily cron (00:05 UTC): SAM.gov attachment text → R2
-                        (pypdf/python-docx/openpyxl extraction, regex label classifier)
-
-extract_personnel.py    GPT extraction of personnel roles/qualifications from bundles
-                        (caches to R2 at it_rfps/personnel/{noticeId}.json)
-
-build_rfp_signals.py    R2 bundles → web/data/rfp_signals.json + rfp_bundles.json
-                        (aggregates signals, loads personnel cache, deduplicates by sol number)
-```
-
-### Mermaid diagram
 
 ```mermaid
 flowchart TD
-    USA["USASpending\nbulk archives"]:::src --> BULK["fetch_bulk.py\ncontracts_bulk.csv"]:::step
-    TANGO["Tango API\n(FPDS)"]:::src --> TF["fetch_tradeoff.py\ntradeoff_lookup.csv"]:::step
-    TANGO --> FP["fetch_protests.py\nprotests_matched.csv"]:::step
-    SAM["SAM.gov\nmonthly extract"]:::src --> ES["enrich_sam.py\nsam_lookup.csv"]:::step
-
-    BULK --> BC["build_contracts.py\ncontracts_raw.csv"]:::step
-    TF --> BC
-    BC --> AZ["analyze.py\nweb/data/*.json"]:::step
-    ES --> AZ
-    FP --> AZ
-
-    SAM2["SAM.gov\nopportunities API"]:::src --> RTP["rfp_text_pipeline.py\nR2: it_rfps/bundles/\n(daily cron)"]:::step
+    SAM["SAM.gov\nopportunities API"]:::src --> RTP["rfp_text_pipeline.py\nR2: it_rfps/bundles/\n(daily cron)"]:::step
     RTP --> EP["extract_personnel.py\nR2: it_rfps/personnel/\n(GPT role extraction)"]:::step
     RTP --> BRS["build_rfp_signals.py\nrfp_bundles.json"]:::step
     EP --> BRS
-
-    AZ --> DASH["Dashboard\nprocurement-methods.vercel.app"]:::out
-    BRS --> DASH
+    BRS --> DASH["Dashboard\nsam-it-notices.vercel.app"]:::out
 
     classDef src  fill:#e8f5e9,stroke:#1B4332,color:#1B4332
     classDef step fill:#f5f5f5,stroke:#666,color:#333
@@ -111,61 +61,28 @@ flowchart TD
 
 ```bash
 pip install -r requirements.txt
+python -m playwright install chromium    # for frontend tests
 
 # API keys in .env
 echo "SAM_API_KEY=your_key"    >> .env
 echo "OPENAI_API_KEY=your_key" >> .env  # for extract_personnel.py
+# R2 credentials also required: CF_R2_ACCOUNT_ID, CF_R2_BUCKET,
+# CF_R2_ACCESS_KEY_ID, CF_R2_SECRET_ACCESS_KEY
 
-# Notice browser (R2 credentials required) — this powers the dashboard
-python3 build_rfp_signals.py     # pull bundles from R2, build rfp_bundles.json
-python3 extract_personnel.py     # optional: GPT personnel extraction
+# Build dashboard JSONs from R2 bundles
+python3 build_rfp_signals.py
 
 # View locally
 cd web && python3 -m http.server 8000
-
-# --- Contracts pipeline (not yet wired to dashboard UI) ---
-# Requires additional API keys: TANGO_API_KEY
-# echo "TANGO_API_KEY=your_key" >> .env
-# python3 fetch_bulk.py --fy 2026      # USASpending needs no key
-# python3 fetch_tradeoff.py            # rate-limited; run daily
-# python3 build_contracts.py
-# python3 enrich_sam.py                # optional: vendor age
-# python3 fetch_protests.py            # optional: GAO protests
-# python3 analyze.py
 ```
 
 All scripts are checkpoint/resume-safe — re-run after rate limits or interruptions.
 
 ---
 
-## Methodology
+## Labels
 
-### Evaluation method classification
-
-Two separate fields with different sources and coverage.
-
-**`eval_method`** — always populated, derived from USASpending competition fields:
-
-| Category | Rule |
-|----------|------|
-| Fair Opportunity | `solicitation_procedures_code = "MAFO"` |
-| Negotiated Proposal | `extent_competed` in (A, D) and `solicitation_procedures = "NP"` |
-| Simplified Acquisition | `extent_competed` in (F, G) |
-| Sole Source | `solicitation_procedures = "SSS"` |
-| Not Competed | `extent_competed` in (B, C), not sole source |
-
-**`tradeoff_code`** — partial coverage, from Tango API (FPDS `tradeoff_process`):
-
-| Value | Meaning |
-|-------|---------|
-| `LPTA` | Lowest Price Technically Acceptable |
-| `TO` | Best-Value Tradeoff |
-| `O` | Other |
-| null | Not yet fetched or not reported (~40–60% of awards) |
-
-### Notice browser labels
-
-Labels are computed by regex on extracted attachment text:
+Computed by regex over extracted attachment text:
 
 | Label | Signal |
 |-------|--------|
@@ -176,11 +93,10 @@ Labels are computed by regex on extracted attachment text:
 
 ### Caveats
 
-- **Tradeoff code coverage is partial.** FPDS `tradeoff_process` is contractor-reported and blank for ~40–60% of awards. Coverage grows daily as `fetch_tradeoff.py` runs (100 calls/day free tier).
-- **USASpending is transaction-level.** We aggregate to one row per contract, taking the latest modification for categorical fields.
-- **SAM entity data is self-reported.** Employee counts and start dates may be blank or inaccurate.
-- **RFP text extraction misses image-only PDFs.** No OCR yet; coverage ~76% of attachments.
-- **Personnel extraction is GPT-based.** Results are good-faith extractions; roles may not exactly match solicitation language.
+- **Text extraction misses image-only PDFs.** No OCR yet; coverage ~76% of
+  attachments.
+- **Personnel extraction is GPT-based.** Roles are good-faith extractions and
+  may not match solicitation language verbatim.
 
 ---
 
@@ -188,21 +104,21 @@ Labels are computed by regex on extracted attachment text:
 
 | Source | What it provides | Access |
 |--------|-----------------|--------|
-| [USASpending](https://www.usaspending.gov) bulk archives | Contract details (75 fields per transaction) | Free, no key |
-| [Tango API](https://govcon.dev) (FPDS) | LPTA/tradeoff codes, GAO protests | Free tier: 100 calls/day |
-| [SAM.gov](https://sam.gov) | Monthly entity extract (vendor age/registration); opportunities API (solicitations) | Free API key |
+| [SAM.gov](https://sam.gov) | Opportunities API + attachment downloads | Free API key |
 | OpenAI API | Personnel role extraction from attachment text | Paid (gpt-4o-mini) |
+| Cloudflare R2 | Pipeline state + bundle storage between runs | Account required |
 
 ---
 
 ## GitHub Actions
 
 | Workflow | Schedule | What it does |
-|----------|----------|-------------|
-| `rfp_text.yml` | Daily 00:05 UTC | Fetch SAM.gov solicitation attachments → R2 |
-| `fetch_tradeoff.yml` | Daily 10:00 UTC | Fetch LPTA/tradeoff codes from Tango API (contracts pipeline, not yet in dashboard) |
+|----------|----------|--------------|
+| `rfp_text.yml` | Daily 00:05 UTC | Pipeline → personnel extraction → rebuild dashboard JSONs → run data + frontend tests → commit `web/data/` + push (Vercel deploys on push) |
 
-R2 (Cloudflare) stores pipeline state and bundles between runs.
+The commit-and-push step is gated on the test suites. If `tests/data/` or
+`tests/frontend/` fail, no commit is made and the previous build keeps
+serving.
 
 ---
 

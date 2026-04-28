@@ -1,4 +1,4 @@
-"""Shared fixtures for procurement-methods frontend tests."""
+"""Shared fixtures for sam-it-notices frontend tests."""
 
 import subprocess
 import time

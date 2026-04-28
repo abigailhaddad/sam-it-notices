@@ -666,7 +666,7 @@
   <section id="panel-methodology" style="margin-top:2.5rem;">
     <h2 class="section-header">How it works</h2>
 
-    <p class="narrative">A daily pipeline pulls solicitation notices from SAM.gov, extracts attachment text, and classifies vocabulary signals. <a href="https://github.com/abigailhaddad/procurement-methods" target="_blank">Source on GitHub ↗</a></p>
+    <p class="narrative">A daily pipeline pulls solicitation notices from SAM.gov, extracts attachment text, and classifies vocabulary signals. <a href="https://github.com/abigailhaddad/sam-it-notices" target="_blank">Source on GitHub ↗</a></p>
 
     <!-- Pipeline flow -->
     <div style="margin:1.25rem 0;">
@@ -685,7 +685,7 @@
   <footer class="site-footer">
     <p>Data: <a href="https://sam.gov" target="_blank">SAM.gov</a> &middot;
        NAICS <span class="naics-scope">541511/512</span> &middot;
-       <a href="https://github.com/abigailhaddad/procurement-methods" target="_blank">Source code</a></p>
+       <a href="https://github.com/abigailhaddad/sam-it-notices" target="_blank">Source code</a></p>
   </footer>
 
 </div><!-- /site-container -->
@@ -752,19 +752,16 @@ const URL_FIELD_MAP = {
 
 function updateURLWithFilters() {
   const params = new URLSearchParams();
-  const byKey = {};
   activeFilters.forEach(f => {
     if (f.type === 'daterange') {
-      if (f.from) params.set('date_from', f.from);
-      if (f.to)   params.set('date_to',   f.to);
+      if (f.from) params.append('date_from', f.from);
+      if (f.to)   params.append('date_to',   f.to);
       return;
     }
     const key = f.field === 'text' ? 'q' : f.field;
-    if (!byKey[key]) byKey[key] = [];
-    if (f.type === 'multiselect') byKey[key].push(...(f.values || []));
-    else byKey[key].push(f.value);
+    if (f.type === 'multiselect') (f.values || []).forEach(v => params.append(key, v));
+    else params.append(key, f.value);
   });
-  Object.entries(byKey).forEach(([k, vals]) => params.set(k, vals.join(',')));
   const qs = params.toString();
   history.replaceState(null, '', qs ? '?' + qs : location.pathname);
   const btn = document.getElementById('copyLinkBtn');
@@ -778,17 +775,20 @@ function applyFiltersFromURL() {
   if (from || to) {
     activeFilters.push({ id: ++filterIdSeq, field: 'date', label: 'Posted Date', type: 'daterange', from: from || '', to: to || '' });
   }
-  params.forEach((val, key) => {
-    if (key === 'date_from' || key === 'date_to') return;
+  const seen = new Set();
+  for (const key of params.keys()) {
+    if (seen.has(key) || key === 'date_from' || key === 'date_to') continue;
+    seen.add(key);
     const meta = URL_FIELD_MAP[key];
-    if (!meta || !val) return;
+    if (!meta) continue;
+    const vals = params.getAll(key).filter(Boolean);
+    if (!vals.length) continue;
     if (meta.type === 'multiselect') {
-      const values = val.split(',').filter(Boolean);
-      if (values.length) activeFilters.push({ id: ++filterIdSeq, ...meta, values });
+      activeFilters.push({ id: ++filterIdSeq, ...meta, values: vals });
     } else {
-      activeFilters.push({ id: ++filterIdSeq, ...meta, value: val });
+      activeFilters.push({ id: ++filterIdSeq, ...meta, value: vals[0] });
     }
-  });
+  }
   applyFiltersToTable();
 }
 
@@ -1183,7 +1183,7 @@ function setupRfpBrowser() {
       className:  c.className || '',
       orderable:  c.orderable !== false,
       visible:    c.visible !== false,
-      searchable: c.searchable || false,
+      searchable: c.searchable !== false,
     })),
     order: [[1, 'desc']],
     pageLength: 25,

@@ -87,15 +87,6 @@ def test_sam_links_in_table(page_loaded):
 
 
 @pytest.mark.frontend
-def test_contracts_column_shows_yes_no(page_loaded):
-    """Contracts column should show 'Yes' or 'No', never blank or other values."""
-    contracts_cells = page_loaded.locator("#rfpTable tbody tr td:nth-child(8)").all()
-    for cell in contracts_cells[:25]:
-        text = cell.inner_text().strip()
-        assert text in ('Yes', 'No'), f"Contracts cell should show 'Yes' or 'No', got: {text!r}"
-
-
-@pytest.mark.frontend
 def test_shareable_url_updates_on_filter(page_loaded):
     """Applying a filter should add params to the URL."""
     page_loaded.click("#addFilterBtn")
@@ -110,12 +101,12 @@ def test_shareable_url_updates_on_filter(page_loaded):
 @pytest.mark.frontend
 def test_shareable_url_restores_filters(page_loaded, server):
     """Loading a URL with filter params should restore the filters."""
-    page_loaded.goto(f"{server}/index.html?contracts=Yes")
+    page_loaded.goto(f"{server}/index.html?naics=541512")
     page_loaded.wait_for_selector("#rfpTable tbody tr", timeout=5000)
     page_loaded.wait_for_timeout(500)
     chips = page_loaded.locator(".filter-chip-active")
     assert chips.count() == 1
-    assert "Yes" in chips.first.inner_text()
+    assert "541512" in chips.first.inner_text()
 
 
 @pytest.mark.frontend

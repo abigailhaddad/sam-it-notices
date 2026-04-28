@@ -12,14 +12,6 @@ def test_rfp_cards_show_percentages(page_loaded):
 
 
 @pytest.mark.frontend
-def test_matched_awards_card(page_loaded):
-    """Matched awards card should show a count."""
-    val = page_loaded.locator("#ccContracts").inner_text()
-    assert val != "—", "Should show matched contract count"
-    assert "matched" in val.lower() or val.replace(",", "").split()[0].isdigit()
-
-
-@pytest.mark.frontend
 def test_card_click_shows_vocab_popup(page_loaded):
     """Clicking an agile card should show a vocabulary popup."""
     agile_card = page_loaded.locator(".rfp-card-clickable[data-label-key='has_agile_vocab']")

@@ -7,5 +7,6 @@ pypdf
 python-docx
 openpyxl
 pytest
+pytest-playwright
 pydantic
 litellm

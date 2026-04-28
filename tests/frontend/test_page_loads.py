@@ -23,7 +23,7 @@ def test_header_visible(page, server):
     assert header.is_visible()
     assert "Federal Government Buys IT Services" in header.inner_text()
     subtitle = page.locator(".site-subtitle")
-    assert "541511/512" in subtitle.inner_text()
+    assert "541511" in subtitle.inner_text() and "541512" in subtitle.inner_text()
 
 
 @pytest.mark.frontend
@@ -34,9 +34,6 @@ def test_cards_show_data(page_loaded):
 
     shall = page_loaded.locator("#rcShall").inner_text()
     assert "%" in shall, f"rcShall missing %: {shall}"
-
-    contracts = page_loaded.locator("#ccContracts").inner_text()
-    assert contracts != "—", "contracts card should show a value"
 
 
 @pytest.mark.frontend
@@ -51,7 +48,7 @@ def test_table_columns(page_loaded):
     """All expected columns should be present in the table header."""
     headers = page_loaded.locator("#rfpTable thead th").all_inner_texts()
     expected = ["Title", "Date", "Type", "Department", "NAICS",
-                "Set-aside", "Labels", "Contracts", "Eval Method", "Tradeoff Code", "SAM.gov", "Docs"]
+                "Set-aside", "Labels", "Data", "SAM.gov", "Docs"]
     for col in expected:
         assert col in headers, f"Missing column: {col}"
 

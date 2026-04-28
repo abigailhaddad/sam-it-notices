@@ -19,7 +19,7 @@ def test_filter_modal_shows_all_columns(page_loaded):
     items = page_loaded.locator(".filter-field-item").all_inner_texts()
     expected_fields = [
         "Title", "Posted Date", "Notice Type", "Department",
-        "NAICS", "Set-aside", "Label", "Has matched contracts", "Full text search",
+        "NAICS", "Set-aside", "Label", "Data available", "Full text search",
     ]
     for field in expected_fields:
         assert any(field in item for item in items), f"Field missing from modal: {field}"
