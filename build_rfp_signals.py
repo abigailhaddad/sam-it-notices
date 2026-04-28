@@ -321,9 +321,19 @@ def aggregate(bundles, personnel_cache: dict | None = None):
         # Recompute labels from stored text rather than trusting the
         # pipeline-time labels[] field — so regex tweaks here take effect on
         # the next rebuild without a pipeline re-run.
-        full_text = "\n\n".join(
-            (a.get("text") or "") for a in atts if a.get("text")
-        ) + "\n\n" + (m.get("description") or "")
+        # Sentinel-delimited per-attachment sections so the modal can render
+        # "from foo.pdf" headers. Modal strips sentinels for display; search
+        # column also strips them so filenames don't pollute matches.
+        text_sections = []
+        for a in atts:
+            t = a.get("text")
+            if not t:
+                continue
+            fname = a.get("filename") or "attachment"
+            text_sections.append(f"␟{fname}␞\n\n{t}")
+        if m.get("description"):
+            text_sections.append(f"␟(notice description)␞\n\n{m.get('description')}")
+        full_text = "\n\n".join(text_sections)
         labels = {
             "shall_count":     len(_RE["shall_count"].findall(full_text)),
             "has_user_vocab":  bool(_RE["has_user_vocab"].search(full_text)),

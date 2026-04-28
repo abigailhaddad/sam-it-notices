@@ -32,10 +32,17 @@ MODEL      = "gpt-5.4-mini"
 R2_BUNDLE_PREFIX    = "it_rfps/bundles/"
 R2_PERSONNEL_PREFIX = "it_rfps/personnel/"
 MAX_TEXT_CHARS      = 25_000   # per bundle; keeps token costs low
-NAICS_KEEP          = {"541511", "541512", "541519", "518210"}
+NAICS_KEEP          = {
+    "541511", "541512", "541513", "541519", "518210",
+    "541330", "541611", "541618", "541690", "541715", "541990",
+}
 
 SYSTEM_PROMPT = """You are extracting key personnel and labor category requirements
 from a US government IT services solicitation (RFP, PWS, or SOW).
+
+The text you receive is divided into per-attachment sections, each prefixed
+with a marker line of the form `=== source: <filename> ===`. Track which
+attachment each role comes from.
 
 Extract every distinct job role or labor category mentioned that has qualifications
 or requirements specified. Focus on roles the contractor must provide — not
@@ -49,6 +56,8 @@ For each role return:
 - certifications: list of required certifications/clearances (e.g. ["CISSP", "TS/SCI"]), else []
 - brief_description: one sentence (≤25 words) summarizing main responsibilities, else null
 - is_key_personnel: true if explicitly called "Key Personnel", false otherwise
+- source_filename: the filename from the most recent `=== source: ... ===` marker
+  preceding the role's text. Required.
 
 Return only roles with at least a title. If no roles are found, return an empty list."""
 
@@ -61,6 +70,7 @@ class PersonnelRole(BaseModel):
     certifications: list[str] = Field(default_factory=list)
     brief_description: Optional[str] = None
     is_key_personnel: bool = False
+    source_filename: Optional[str] = None
 
 
 class PersonnelExtraction(BaseModel):
@@ -98,7 +108,7 @@ def _bundle_text(bundle: dict) -> str:
         if not text:
             continue
         fname = att.get("filename") or ""
-        chunk = f"--- {fname} ---\n{text}"
+        chunk = f"=== source: {fname} ===\n{text}"
         if total + len(chunk) > MAX_TEXT_CHARS:
             remaining = MAX_TEXT_CHARS - total
             if remaining > 500:
@@ -119,7 +129,6 @@ def extract_roles(text: str) -> PersonnelExtraction | None:
                     {"role": "user",   "content": text},
                 ],
                 response_format=PersonnelExtraction,
-                temperature=0.0,
             )
             raw = response.choices[0].message.content
             return PersonnelExtraction(**json.loads(raw))

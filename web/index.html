@@ -948,7 +948,10 @@ const RFP_COLS = [
     render: b => b.attachment_count || b.att || 0 },
   { key: '_text',   title: '_text',      visible: false, searchable: true,
     render: (b) => [
-      b.search_text || '',
+      // Strip per-attachment section sentinels (␟filename␞) from the
+      // searchable text so attachment filenames don't pollute global
+      // free-text matches.
+      (b.search_text || '').replace(/␟[^␞]*␞/g, ' '),
       b.solicitation_number || '',
       makeDataSearchText(b),
     ].join(' ') },
@@ -1429,9 +1432,10 @@ function openRfpModal(bundle, detail, query) {
   // Key personnel / labor categories
   const personnel = (detail || bundle).personnel;
   if (personnel && personnel.length) {
-    const hasYears = personnel.some(r => r.min_years_experience != null);
-    const hasEdu   = personnel.some(r => r.education);
-    const hasCerts = personnel.some(r => r.certifications && r.certifications.length);
+    const hasYears  = personnel.some(r => r.min_years_experience != null);
+    const hasEdu    = personnel.some(r => r.education);
+    const hasCerts  = personnel.some(r => r.certifications && r.certifications.length);
+    const hasSource = personnel.some(r => r.source_filename);
     html += `<details style="margin-top:1rem;">
       <summary class="rfp-modal-section-title" style="cursor:pointer;user-select:none;list-style:none;display:flex;align-items:center;gap:0.4rem;">
         <span>▶</span> Key Personnel / Labor Categories (${personnel.length})
@@ -1445,6 +1449,7 @@ function openRfpModal(bundle, detail, query) {
               ${hasEdu   ? '<th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Education</th>' : ''}
               ${hasCerts ? '<th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Certs</th>' : ''}
               <th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Description</th>
+              ${hasSource ? '<th style="padding:0.35rem 0.5rem;border-bottom:1px solid var(--color-border);">Source</th>' : ''}
             </tr>
           </thead>
           <tbody>
@@ -1458,6 +1463,7 @@ function openRfpModal(bundle, detail, query) {
               ${hasEdu   ? `<td style="padding:0.3rem 0.5rem;">${escapeHtml(r.education || '—')}</td>` : ''}
               ${hasCerts ? `<td style="padding:0.3rem 0.5rem;">${(r.certifications||[]).map(c => escapeHtml(c)).join(', ') || '—'}</td>` : ''}
               <td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.75rem;">${escapeHtml(r.brief_description || '')}</td>
+              ${hasSource ? `<td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.7rem;">${escapeHtml(r.source_filename || '—')}</td>` : ''}
             </tr>`).join('')}
           </tbody>
         </table>
@@ -1465,33 +1471,62 @@ function openRfpModal(bundle, detail, query) {
     </details>`;
   }
 
-  // Full extracted text
+  // Full extracted text — split into per-attachment sections.
+  // Sentinels: "␟filename␞\n\n<text>" — see build_rfp_signals.py.
   const fullText = bundle.search_text || (rfpDetailByNid[bundle.nid || bundle.notice_id] || {}).search_text || '';
   if (fullText && fullText.trim() && !fullText.trim().startsWith('http')) {
     const query = getFilterText().trim().toLowerCase();
-    // Normalize PDF line-breaks: collapse single newlines into spaces, preserve paragraph breaks
-    const normalized = fullText
+    const queryRe = query
+      ? new RegExp(escapeHtml(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')
+      : null;
+    const normalize = t => t
       .replace(/\r\n/g, '\n')
       .replace(/\n{2,}/g, '\x00')       // mark paragraph breaks
       .replace(/\n/g, ' ')              // collapse soft line-wraps to space
       .replace(/  +/g, ' ')             // collapse multiple spaces
       .replace(/\x00/g, '\n\n')         // restore paragraph breaks
       .trim();
-    const escaped = escapeHtml(normalized);
-    const displayText = query
-      ? escaped.replace(
-          new RegExp(escapeHtml(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
-          m => `<mark>${m}</mark>`
-        )
-      : escaped;
-    // Convert paragraph breaks to <p> tags for clean rendering
-    const paragraphed = displayText.split('\n\n').map(p => `<p style="margin:0 0 0.6em">${p.trim()}</p>`).join('');
+    const renderSection = t => {
+      const escaped = escapeHtml(normalize(t));
+      const displayText = queryRe ? escaped.replace(queryRe, m => `<mark>${m}</mark>`) : escaped;
+      return displayText.split('\n\n').map(p => `<p style="margin:0 0 0.6em">${p.trim()}</p>`).join('');
+    };
+
+    // Parse sentinel-delimited sections. Pre-sentinel text (legacy bundles
+    // without markers) is rendered as one untitled section.
+    const SENT = /␟([^␞]*?)␞/g;
+    const sections = [];
+    let lastIdx = 0, match;
+    while ((match = SENT.exec(fullText)) !== null) {
+      if (match.index > lastIdx) {
+        const pre = fullText.slice(lastIdx, match.index).trim();
+        if (pre) sections.push({ source: null, text: pre });
+      }
+      // Find next sentinel or end-of-string
+      SENT.lastIndex = match.index + match[0].length;
+      const nextMatch = SENT.exec(fullText);
+      const endIdx = nextMatch ? nextMatch.index : fullText.length;
+      const body = fullText.slice(match.index + match[0].length, endIdx).trim();
+      sections.push({ source: match[1], text: body });
+      // Rewind so the outer loop sees nextMatch
+      SENT.lastIndex = match.index + match[0].length;
+      lastIdx = endIdx;
+    }
+    if (!sections.length) sections.push({ source: null, text: fullText });
+
+    const sectionHtml = sections.map(s => {
+      const header = s.source
+        ? `<div style="font-family:var(--font-heading);font-weight:600;color:var(--color-accent);margin:0.75rem 0 0.25rem;font-size:0.85rem;">from ${escapeHtml(s.source)}</div>`
+        : '';
+      return `${header}<div style="border-left:2px solid var(--color-border);padding-left:0.6rem;">${renderSection(s.text)}</div>`;
+    }).join('');
+
     html += `
       <details style="margin-top:1rem;">
         <summary class="rfp-modal-section-title" style="cursor:pointer;user-select:none;list-style:none;display:flex;align-items:center;gap:0.4rem;">
-          <span>▶</span> Full extracted text
+          <span>▶</span> Full extracted text (${sections.length} section${sections.length !== 1 ? 's' : ''})
         </summary>
-        <div style="margin-top:0.5rem;padding:0.75rem;background:var(--color-surface);border-radius:0.375rem;font-size:0.8rem;line-height:1.6;max-height:400px;overflow-y:auto;">${paragraphed}</div>
+        <div style="margin-top:0.5rem;padding:0.75rem;background:var(--color-surface);border-radius:0.375rem;font-size:0.8rem;line-height:1.6;max-height:400px;overflow-y:auto;">${sectionHtml}</div>
       </details>`;
   }
 
