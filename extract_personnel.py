@@ -37,18 +37,50 @@ NAICS_KEEP          = {
     "541330", "541611", "541618", "541690", "541715", "541990",
 }
 
-SYSTEM_PROMPT = """You are extracting key personnel and labor category requirements
-from a US government IT services solicitation (RFP, PWS, or SOW).
+SYSTEM_PROMPT = """You are extracting **contractor-side** key personnel and labor
+category requirements from a US government IT services solicitation
+(RFP, PWS, or SOW).
 
-The text you receive is divided into per-attachment sections, each prefixed
-with a marker line of the form `=== source: <filename> ===`. Track which
-attachment each role comes from.
+The text is divided into per-attachment sections, each prefixed with a marker
+of the form `=== source: <filename> ===`. Track which attachment each role
+comes from.
 
-Extract every distinct job role or labor category mentioned that has qualifications
-or requirements specified. Focus on roles the contractor must provide — not
-government roles or evaluation criteria.
+INCLUDE ONLY roles the contractor must provide / staff that have at least
+one CONCRETE QUALIFICATION specified — meaning at least one of:
+  - a minimum years of experience (e.g. "5+ years")
+  - a required degree or education level (e.g. "Bachelor's in CS")
+  - a required certification or clearance (e.g. "CISSP", "Secret clearance")
+  - an explicit seniority level (e.g. "Senior", "Mid", "Principal")
 
-For each role return:
+A bare mention like "the contractor will provide web developers" is NOT
+sufficient — that's just describing the work, not a labor category with
+hiring requirements. Skip roles that have no concrete qualifications.
+
+Also skip generic catch-all terms like "Contractor", "Vendor", "Awardee",
+"Offeror" — those are the company, not roles.
+
+Examples of roles to INCLUDE: Senior Web Developer (Bachelor's, 5+ yrs),
+Cybersecurity Analyst (CISSP required), Cloud Architect (10+ yrs AWS),
+Project Manager (PMP, 7+ yrs), Subject Matter Expert (TS/SCI clearance).
+
+EXCLUDE government / federal-side roles, oversight roles, and acquisition
+personnel. Do NOT extract any of the following (or close variants):
+- Contracting Officer (CO), Contracting Officer's Representative (COR/COTR)
+- Procuring Contracting Officer (PCO), Administrative Contracting Officer (ACO)
+- Government Project / Program Manager (when described as government staff)
+- Office POC, Government POC, Technical POC (TPOC), Agency Lead
+- Source Selection Authority, Source Selection Evaluation Board (SSEB)
+- Quality Assurance Surveillance Personnel (QASP government reviewers)
+- Inspector General, Auditor (govt-side), Ombudsman
+- Any role described as "the Government will provide", "Government-furnished",
+  "Federal employee", or whose function is to oversee, evaluate, accept
+  deliverables, or administer the contract.
+
+If a role's brief_description says it administers, oversees, evaluates,
+accepts, or issues task orders / contractual actions, it's almost certainly
+government-side — exclude it.
+
+For each contractor-side role return:
 - title: the job title or labor category name exactly as written
 - level: seniority level if stated (Junior / Mid / Senior / Lead / Principal / etc.), else null
 - min_years_experience: minimum years of experience as an integer, else null
@@ -56,10 +88,11 @@ For each role return:
 - certifications: list of required certifications/clearances (e.g. ["CISSP", "TS/SCI"]), else []
 - brief_description: one sentence (≤25 words) summarizing main responsibilities, else null
 - is_key_personnel: true if explicitly called "Key Personnel", false otherwise
-- source_filename: the filename from the most recent `=== source: ... ===` marker
-  preceding the role's text. Required.
+- source_filename: the filename from the most recent `=== source: ... ===`
+  marker preceding the role's text. Required.
 
-Return only roles with at least a title. If no roles are found, return an empty list."""
+Return only contractor-side roles with at least a title. If no qualifying
+roles are found, return an empty list."""
 
 
 class PersonnelRole(BaseModel):
@@ -88,6 +121,44 @@ def _s3_client():
     )
 
 
+# Government-side roles whose role-defining paragraphs we strip before GPT
+# sees the text. Matches role titles AS DEFINING SUBJECT — i.e. when the
+# title appears near the top of a paragraph (a heading, bullet, "The CO
+# shall…" lead-in). Passing mentions further into a paragraph are left
+# alone since they're often legitimate context for contractor roles
+# (e.g. "the contractor coordinates with the Contracting Officer").
+import re as _re
+
+_GOVT_ROLE = _re.compile(
+    r"\b("
+    r"contracting officer(?:'?s representative)?|"
+    r"contracting\s+representative|"
+    r"cor|cotr|aco|pco|tpoc|"
+    r"administrative contracting officer|"
+    r"procuring contracting officer|"
+    r"government (?:project|program) manager|"
+    r"(?:government|agency|office|technical) poc|"
+    r"source selection (?:authority|evaluation board)|sseb|"
+    r"inspector general|ombudsman|"
+    r"(?:federal|government) (?:lead|employee)|"
+    r"contract(?:ing)? specialist|"
+    r"quality assurance surveillance personnel"
+    r")\b",
+    _re.IGNORECASE,
+)
+
+
+def _strip_govt_role_paragraphs(text: str) -> str:
+    """Drop paragraphs whose opening establishes a govt-side role.
+
+    A paragraph counts as "defining" if a govt-role keyword appears in its
+    first 120 chars — usually a heading, bullet, or "The CO …" lead-in.
+    """
+    paragraphs = _re.split(r"\n\s*\n", text)
+    kept = [p for p in paragraphs if not _GOVT_ROLE.search(p[:120])]
+    return "\n\n".join(kept)
+
+
 def _bundle_text(bundle: dict) -> str:
     """Concatenate attachment text, prioritising PWS/SOW/Section-L docs."""
     atts = bundle.get("attachments") or []
@@ -106,6 +177,9 @@ def _bundle_text(bundle: dict) -> str:
     for att in atts_sorted:
         text = (att.get("text") or "").strip()
         if not text:
+            continue
+        text = _strip_govt_role_paragraphs(text)
+        if not text.strip():
             continue
         fname = att.get("filename") or ""
         chunk = f"=== source: {fname} ===\n{text}"

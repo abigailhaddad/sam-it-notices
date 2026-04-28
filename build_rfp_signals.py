@@ -40,6 +40,47 @@ OUT_BUNDLES = Path("web/data/rfp_bundles.json")
 R2_PREFIX   = "it_rfps/bundles/"
 
 
+# Personnel rows must clear two bars to be surfaced on the dashboard:
+#   1. Title isn't a generic counterparty term (Contractor, Vendor, etc.)
+#   2. At least one concrete qualification — min_years, education, certs,
+#      or an explicit seniority level. Without any of these, the "role" is
+#      almost certainly a passing mention, not a labor category.
+
+_GENERIC_TITLES = {
+    "contractor", "the contractor", "vendor", "the vendor",
+    "awardee", "the awardee", "offeror", "the offeror",
+    "bidder", "the bidder", "company", "firm", "team",
+    # Govt-side roles that can still slip past the prompt
+    "contracting officer", "contracting officer's representative",
+    "contracting officer’s representative",  # smart-quote variant
+    "cor", "cotr", "aco", "pco", "office poc", "agency poc",
+    "technical poc", "tpoc", "government project manager",
+    "government program manager",
+}
+
+
+def _has_concrete_qual(role: dict) -> bool:
+    return bool(
+        role.get("min_years_experience") is not None
+        or (role.get("education") or "").strip()
+        or (role.get("certifications") or [])
+        or (role.get("level") or "").strip()
+    )
+
+
+def _filter_personnel(roles: list[dict]) -> list[dict]:
+    """Drop generic-counterparty titles and roles with zero concrete quals."""
+    out = []
+    for r in roles:
+        title = (r.get("title") or "").strip().lower().rstrip("(s)")
+        if title in _GENERIC_TITLES:
+            continue
+        if not _has_concrete_qual(r):
+            continue
+        out.append(r)
+    return out
+
+
 # ── LCAT extraction ──────────────────────────────────────────────────────────
 
 class LcatEntry(BaseModel):
@@ -380,6 +421,10 @@ def aggregate(bundles, personnel_cache: dict | None = None):
         lcats = extract_lcats(atts)
         nid   = b.get("notice_id") or ""
         personnel = (personnel_cache or {}).get(nid) or None
+        if personnel:
+            personnel = _filter_personnel(personnel)
+            if not personnel:
+                personnel = None
 
         # Slim attachment list for the dashboard: filename + R2 public URL.
         # SAM resource URLs require an api_key (would 401 from a browser),
