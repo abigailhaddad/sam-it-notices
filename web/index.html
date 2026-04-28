@@ -200,6 +200,11 @@
     .chip.chip-agile     { background: #C9A84C; color: #1B4332; }
     .chip.chip-rtm       { background: #374151; }
 
+    .rfp-badge-green  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#d1ead9; color:#1B4332; margin:1px; white-space:nowrap; }
+    .rfp-badge-amber  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#faedc4; color:#7a5500; margin:1px; white-space:nowrap; }
+    .rfp-badge-surface{ display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#e5e7eb; color:#374151; margin:1px; white-space:nowrap; }
+    .rfp-badge-muted  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#f3f4f6; color:#6b7280; margin:1px; white-space:nowrap; }
+
 
     /* ── RFP text modal ────────────────────────────────────────────────── */
     .rfp-modal-overlay {
@@ -593,9 +598,8 @@
   <section id="panel-rfp" aria-hidden="false">
 
     <p class="narrative" style="margin-top:1.25rem;">
-      Each row is one SAM.gov solicitation notice (NAICS 541511/512) with attachment text extracted daily.
-      Contract awards (NAICS 541511/512, <span class="fy-range"></span>) are linked where solicitation numbers match &mdash; coverage grows as the RFP backfill runs.
-      Click a card to see what vocabulary it matches. Use <strong>+ Add filter</strong> to filter the table.
+      Each row is one SAM.gov solicitation notice with attachment text extracted daily.
+      Click a card to filter by vocabulary signal. Use <strong>+ Add filter</strong> to filter by type, department, NAICS, set-aside, or date.
     </p>
 
     <!-- Reactive summary cards -->
@@ -1260,7 +1264,7 @@ function setupRfpBrowser() {
     order: [[1, 'desc']],
     pageLength: 25,
     lengthMenu: [25, 50, 100],
-    dom: "<'rfp-dt-top'lf>rt<'rfp-dt-bottom'ip>",
+    dom: "<'rfp-dt-top'l>rt<'rfp-dt-bottom'ip>",
     language: {
       search: '',
       searchPlaceholder: 'Search title, dept, set-aside, or full RFP text…',
