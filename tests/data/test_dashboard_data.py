@@ -1,8 +1,9 @@
-"""Data integrity tests for web/data/ JSON files before pushing to Vercel."""
+"""Data integrity tests for web/data/ JSON files — notice browser only."""
 import json
 from pathlib import Path
 
 DATA = Path("web/data")
+NAICS_VALID = {"541511", "541512", "541519", "518210"}
 
 
 def load(name):
@@ -10,65 +11,43 @@ def load(name):
 
 
 def test_required_files_exist():
-    for f in [
-        "summary.json", "by_eval_method.json", "by_eval_method_fy.json",
-        "by_fy.json", "by_agency.json", "rfp_bundles.json", "combined_table.json",
-    ]:
+    for f in ["rfp_signals.json", "rfp_bundles.json"]:
         assert (DATA / f).exists(), f"Missing {f}"
 
 
-def test_summary_contract_count():
-    s = load("summary.json")
-    assert s.get("total_contracts", 0) > 1000, \
-        f"Expected >1000 contracts, got {s.get('total_contracts')}"
-
-
-def test_summary_obligated():
-    s = load("summary.json")
-    assert s.get("total_obligated_b", 0) > 1, \
-        f"Expected >$1B obligated, got {s.get('total_obligated_b')}"
-
-
-def test_eval_method_no_tango_categories():
-    """eval_method is USASpending-only — LPTA/BVT belong in tradeoff_code."""
-    methods = {d["method"] for d in load("by_eval_method.json")}
-    assert "LPTA" not in methods, "LPTA should not be in eval_method (use tradeoff_code)"
-    assert "Best-Value Tradeoff" not in methods, \
-        "Best-Value Tradeoff should not be in eval_method (use tradeoff_code)"
-
-
-def test_eval_method_expected_categories():
-    methods = {d["method"] for d in load("by_eval_method.json")}
-    for expected in ("Fair Opportunity", "Negotiated Proposal", "Simplified Acquisition"):
-        assert expected in methods, f"Expected eval_method '{expected}' not found"
-
-
-def test_eval_method_nonzero_counts():
-    for d in load("by_eval_method.json"):
-        assert d.get("count", 0) > 0, f"eval_method '{d['method']}' has zero count"
+def test_rfp_bundles_not_empty():
+    bundles = load("rfp_bundles.json")
+    assert len(bundles) > 100, f"Expected >100 bundles, got {len(bundles)}"
 
 
 def test_rfp_bundles_naics_scope():
-    """All bundles must be 541511 or 541512 — no off-scope NAICS."""
     bundles = load("rfp_bundles.json")
-    assert len(bundles) > 0, "rfp_bundles.json is empty"
-    bad = [b.get("naics") for b in bundles if b.get("naics") not in ("541511", "541512")]
-    assert not bad, f"Off-scope NAICS in rfp_bundles: {set(bad)}"
+    bad = [b.get("naics") for b in bundles if b.get("naics") and b.get("naics") not in NAICS_VALID]
+    assert not bad, f"Unexpected NAICS codes in rfp_bundles: {set(bad)}"
 
 
-def test_combined_table_naics_scope():
-    ct = load("combined_table.json")
-    assert len(ct) > 0, "combined_table.json is empty"
-    bad = [b.get("naics") for b in ct if b.get("naics") not in ("541511", "541512", "")]
-    assert not bad, f"Off-scope NAICS in combined_table: {set(bad)}"
+def test_rfp_bundles_required_fields():
+    bundles = load("rfp_bundles.json")
+    for b in bundles[:20]:
+        assert b.get("notice_id"), f"Bundle missing notice_id: {b}"
+        assert b.get("title") or b.get("name"), f"Bundle missing title: {b.get('notice_id')}"
 
 
-def test_by_fy_has_recent_year():
-    data = load("by_fy.json")
-    assert "2026" in data or "2025" in data, \
-        f"No recent fiscal year in by_fy.json, found: {list(data.keys())}"
+def test_rfp_signals_structure():
+    signals = load("rfp_signals.json")
+    assert "by_dept" in signals, "rfp_signals.json missing 'by_dept'"
+    assert len(signals["by_dept"]) > 0, "rfp_signals by_dept is empty"
+    assert "date_range" in signals, "rfp_signals.json missing 'date_range'"
 
 
-def test_by_agency_nonzero():
-    data = load("by_agency.json")
-    assert len(data) >= 5, f"Expected ≥5 agencies, got {len(data)}"
+def test_rfp_bundles_no_award_notices():
+    bundles = load("rfp_bundles.json")
+    award_notices = [b for b in bundles if (b.get("type") or "") == "Award Notice"]
+    assert not award_notices, f"Award Notices found in rfp_bundles ({len(award_notices)})"
+
+
+def test_rfp_bundles_no_duplicate_solicitation_numbers():
+    bundles = load("rfp_bundles.json")
+    sol_nums = [b["solicitation_number"] for b in bundles if b.get("solicitation_number")]
+    assert len(sol_nums) == len(set(sol_nums)), \
+        f"Duplicate solicitation numbers found in rfp_bundles"

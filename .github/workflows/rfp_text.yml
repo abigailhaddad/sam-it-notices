@@ -78,6 +78,10 @@ jobs:
         if: always() && inputs.dry_run != true
         run: python build_rfp_signals.py
 
+      - name: Run data tests
+        if: always() && inputs.dry_run != true
+        run: python -m pytest tests/data/ -v --tb=short
+
       - name: Commit updated dashboard JSONs
         if: always() && inputs.dry_run != true
         run: |
