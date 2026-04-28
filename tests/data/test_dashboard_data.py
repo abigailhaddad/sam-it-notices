@@ -50,6 +50,52 @@ def test_rfp_bundles_no_award_notices():
     assert not award_notices, f"Award Notices found in rfp_bundles ({len(award_notices)})"
 
 
+R2_PUBLIC_BASE = "https://pub-9f4e2a3f6cb94f8a9965f749fae53430.r2.dev"
+
+
+def test_rfp_bundles_attachments_use_r2_urls():
+    """Every attachment surfaced to the dashboard must link to our public R2
+    bucket — SAM resource URLs require an api_key and would 401 from a
+    browser. build_rfp_signals.py is supposed to drop attachments without
+    an r2_url, so a leak here means that filter regressed.
+    """
+    bundles = load("rfp_bundles.json")
+    bad = []
+    for b in bundles:
+        for a in (b.get("attachments") or []):
+            url = a.get("url") or ""
+            if not url.startswith(R2_PUBLIC_BASE + "/"):
+                bad.append((b.get("notice_id"), a.get("filename"), url))
+    assert not bad, (
+        f"{len(bad)} attachment(s) point at non-R2 URL; first: {bad[0]}"
+    )
+
+
+def test_rfp_bundles_attachment_count_matches():
+    """attachment_count should equal len(attachments) when attachments is
+    populated. Catches drift between the count field and the link list.
+    """
+    bundles = load("rfp_bundles.json")
+    mismatches = []
+    for b in bundles:
+        atts = b.get("attachments") or []
+        if not atts:
+            continue
+        count = b.get("attachment_count")
+        if count is not None and count < len(atts):
+            mismatches.append((b.get("notice_id"), count, len(atts)))
+    assert not mismatches, f"attachment_count < len(attachments): {mismatches[:3]}"
+
+
+def test_rfp_bundles_have_some_attachments():
+    """Sanity floor: at least 100 bundles should expose attachment links."""
+    bundles = load("rfp_bundles.json")
+    with_atts = [b for b in bundles if b.get("attachments")]
+    assert len(with_atts) >= 100, (
+        f"Expected ≥100 bundles with attachment links, got {len(with_atts)}"
+    )
+
+
 def test_rfp_bundles_no_duplicate_solicitation_numbers():
     bundles = load("rfp_bundles.json")
     sol_nums = [b["solicitation_number"] for b in bundles if b.get("solicitation_number")]

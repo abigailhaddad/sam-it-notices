@@ -138,3 +138,27 @@ def test_full_text_section_in_modal(page_loaded):
             return  # found at least one row with full text section
     # Not a failure if no rows have text — just skip
     pytest.skip("No rows with extracted text found in first 20")
+
+
+@pytest.mark.frontend
+def test_modal_renders_attachment_links(page_loaded):
+    """At least one row in the first 20 should open a modal with one or more
+    R2 attachment links — the public, browser-friendly download URLs we
+    backfilled.
+    """
+    rows = page_loaded.locator("#rfpTable tbody tr").all()
+    for row in rows[:20]:
+        row.click()
+        page_loaded.wait_for_timeout(200)
+        modal = page_loaded.locator("#rfpModal")
+        if "open" not in (modal.get_attribute("class") or ""):
+            continue
+        att_links = page_loaded.locator(
+            "#rfpModalBody a[href^='https://pub-9f4e2a3f6cb94f8a9965f749fae53430.r2.dev/']"
+        )
+        count = att_links.count()
+        page_loaded.locator("#rfpModalClose").click()
+        page_loaded.wait_for_timeout(100)
+        if count >= 1:
+            return  # found a row with R2 attachment links
+    pytest.skip("No rows with attachment links found in first 20")

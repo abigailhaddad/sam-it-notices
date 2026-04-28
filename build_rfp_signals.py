@@ -371,12 +371,14 @@ def aggregate(bundles, personnel_cache: dict | None = None):
         nid   = b.get("notice_id") or ""
         personnel = (personnel_cache or {}).get(nid) or None
 
-        # Slim attachment list for the dashboard: filename + public SAM URL
-        # only. Skip extracted text + binary metadata to keep the JSON small.
+        # Slim attachment list for the dashboard: filename + R2 public URL.
+        # SAM resource URLs require an api_key (would 401 from a browser),
+        # so we only ship attachments that have an r2_url. Skip extracted
+        # text + binary metadata to keep the JSON small.
         attachment_links = [
-            {"filename": a.get("filename"), "url": a.get("url")}
+            {"filename": a.get("filename"), "url": a.get("r2_url")}
             for a in atts
-            if a.get("url")
+            if a.get("r2_url")
         ]
 
         bundle_rows.append({

@@ -172,6 +172,55 @@ def _push_state_to_r2() -> None:
     print(f"  state -> R2")
 
 
+# Public R2 base URL for the `usaspending` bucket — same hash as the
+# sister dod-contract-vehicles project. Used for direct attachment links.
+R2_PUBLIC_BASE = "https://pub-9f4e2a3f6cb94f8a9965f749fae53430.r2.dev"
+
+
+def _attachment_r2_key(notice_id: str, filename: str) -> str:
+    return f"{R2_PREFIX}attachments/{notice_id}/{filename}"
+
+
+_EXT_CT = {
+    ".pdf":  "application/pdf",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".doc":  "application/msword",
+    ".xls":  "application/vnd.ms-excel",
+    ".txt":  "text/plain",
+    ".zip":  "application/zip",
+}
+
+
+def _infer_content_type(filename: str, fallback: str | None) -> str:
+    """Pick the most browser-friendly Content-Type. SAM serves everything
+    as application/octet-stream, which forces a download instead of letting
+    PDFs render inline — so prefer the extension-based guess.
+    """
+    lower = (filename or "").lower()
+    for ext, ct in _EXT_CT.items():
+        if lower.endswith(ext):
+            return ct
+    return fallback or "application/octet-stream"
+
+
+def _upload_attachment_to_r2(notice_id: str, filename: str, data: bytes,
+                              content_type: str | None) -> str | None:
+    """Upload raw attachment bytes to R2. Returns the public URL, or None
+    if R2 is unconfigured. Idempotent — overwrites if key already exists.
+    """
+    if not os.environ.get("CF_R2_ACCOUNT_ID"):
+        return None
+    import r2_sync
+    key = _attachment_r2_key(notice_id, filename)
+    r2_sync._client().put_object(
+        Bucket=r2_sync.BUCKET, Key=key, Body=data,
+        ContentType=_infer_content_type(filename, content_type),
+    )
+    from urllib.parse import quote
+    return f"{R2_PUBLIC_BASE}/{quote(key, safe='/')}"
+
+
 def _push_bundles_to_r2(noticeids: list[str]) -> None:
     if not os.environ.get("CF_R2_ACCOUNT_ID") or not noticeids:
         return
@@ -362,6 +411,7 @@ def _extract_by_ext(filename: str, content_type: str, data: bytes) -> tuple[int 
 
 def download_and_extract(session: requests.Session, opp: dict) -> list[dict]:
     links = opp.get("resourceLinks") or []
+    notice_id = opp.get("noticeId") or ""
     out: list[dict] = []
     for i, url in enumerate(links):
         fetch_url = url
@@ -385,12 +435,23 @@ def download_and_extract(session: requests.Session, opp: dict) -> list[dict]:
             filename = re.split(r"[?#]", url.rstrip("/").split("/")[-1])[0] or f"attachment_{i}"
 
         sha = hashlib.sha256(data).hexdigest()
-        pages, text = _extract_by_ext(filename, resp.headers.get("content-type", ""), data)
+        content_type = resp.headers.get("content-type", "")
+        pages, text = _extract_by_ext(filename, content_type, data)
         chars = len(text) if text else 0
+
+        # Mirror the raw bytes to R2 so the dashboard has a stable, public
+        # link. SAM's resource URLs require an api_key and 401 from a browser.
+        r2_url = None
+        try:
+            r2_url = _upload_attachment_to_r2(notice_id, filename, data,
+                                              content_type.split(";")[0].strip() or None)
+        except Exception as exc:
+            print(f"  R2 upload failed for {filename}: {exc}")
 
         out.append({
             "index":    i,
             "url":      url,
+            "r2_url":   r2_url,
             "filename": filename,
             "bytes":    len(data),
             "sha256":   sha,
