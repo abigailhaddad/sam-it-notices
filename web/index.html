@@ -621,11 +621,6 @@
         <div class="rfp-card-n" id="rcRtm">—</div>
         <div class="rfp-card-label">RTM<br><span style="font-size:0.65rem;font-weight:400;">requirements traceability</span></div>
       </div>
-      <div style="width:100%;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin-bottom:0.25rem;margin-top:0.5rem;">Matched awards (NAICS 541511/512, <span class="fy-range"></span>)</div>
-      <div class="rfp-card">
-        <div class="rfp-card-n" id="ccContracts">—</div>
-        <div class="rfp-card-label">contracts</div>
-      </div>
     </div>
 
     <!-- Chip filter system -->
@@ -659,9 +654,6 @@
             <th>NAICS</th>
             <th>Set-aside</th>
             <th>Labels</th>
-            <th>Contracts</th>
-            <th>Eval Method</th>
-            <th>Tradeoff Code</th>
             <th>SAM.gov</th>
             <th>Docs</th>
           </tr>
@@ -709,8 +701,8 @@
           <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-gold);border-radius:0 0.25rem 0.25rem 0;"><strong>SAM.gov API</strong> → solicitation notices, attachment text</div>
           <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ rfp_text_pipeline.py (daily cron)</div>
           <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-gold);border-radius:0 0.25rem 0.25rem 0;"><strong>Regex classifier</strong> → shall / user / agile / RTM labels</div>
-          <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ build_rfp_signals.py + build_combined_table.py</div>
-          <div style="padding:0.4rem 0.6rem;background:var(--color-gold);color:#1B4332;border-radius:0.25rem;font-weight:600;">combined_table.json → RFP browser table</div>
+          <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ build_rfp_signals.py + GPT-4o-mini personnel extraction</div>
+          <div style="padding:0.4rem 0.6rem;background:var(--color-gold);color:#1B4332;border-radius:0.25rem;font-weight:600;">rfp_bundles.json → RFP browser</div>
         </div>
       </div>
     </div>
@@ -796,7 +788,7 @@ function mkChart(id, config) {
 
 async function loadAll() {
   const files = ['summary','by_eval_method','by_eval_method_fy','by_agency','top_vendors',
-                 'by_vendor_age','protests','filters','rfp_signals','rfp_bundles','combined_table'];
+                 'by_vendor_age','protests','filters','rfp_signals','rfp_bundles'];
   const results = await Promise.all(
     files.map(f => fetch(`data/${f}.json`).then(r => r.json()).catch(() => null))
   );
@@ -812,7 +804,7 @@ async function loadAll() {
   }
 
   // Populate dynamic RFP date range from actual bundle posted dates
-  const rfpDates = (DATA.combined_table || DATA.rfp_bundles || [])
+  const rfpDates = (DATA.rfp_bundles || [])
     .map(b => b.posted_date).filter(Boolean).sort();
   if (rfpDates.length) {
     const minYear = rfpDates[0].slice(0, 4);
@@ -821,7 +813,7 @@ async function loadAll() {
     document.querySelectorAll('.fy-range-rfps').forEach(el => { el.textContent = rfpText; });
   }
 
-  if (DATA.combined_table || DATA.rfp_bundles) {
+  if (DATA.rfp_bundles) {
     setupRfpBrowser();
     applyFiltersFromURL();
   }
@@ -993,9 +985,6 @@ const FILTER_COLS = [
   { field: 'naics',     label: 'NAICS',                  type: 'multiselect', getVals: b => b.naics },
   { field: 'sa',        label: 'Set-aside',              type: 'multiselect', getVals: b => typeof b.set_aside === 'string' ? b.set_aside : b.sa },
   { field: 'label',     label: 'Label',                  type: 'multiselect', staticOptions: ['shall clauses', 'user vocab', 'agile vocab', 'RTM'] },
-  { field: 'contracts', label: 'Has matched contracts',  type: 'multiselect', staticOptions: ['Yes', 'No'] },
-  { field: 'evalmethod',label: 'Eval method',            type: 'multiselect', getVals: b => (b.contracts || []).map(c => c.em).filter(Boolean) },
-  { field: 'tradeoff',  label: 'Tradeoff code',          type: 'multiselect', getVals: b => (b.contracts || []).map(c => c.tc).filter(Boolean) },
   { field: 'text',      label: 'Full text search',       type: 'text' },
 ];
 
@@ -1182,7 +1171,7 @@ function updateRfpCards() {
 }
 
 function setupRfpBrowser() {
-  const bundles = DATA.combined_table || DATA.rfp_bundles;
+  const bundles = DATA.rfp_bundles;
   if (!bundles || !bundles.length) return;
 
   // Build rfp detail lookup (for modal snippets + search_text)
@@ -1198,10 +1187,6 @@ function setupRfpBrowser() {
     }).join(' ');
   }
 
-  function makeContractsCell(b) {
-    return (b.contracts || []).length ? 'Yes' : 'No';
-  }
-
   function makeSamLink(b) {
     const url = b.ui_link || b.link || '';
     return url
@@ -1213,9 +1198,6 @@ function setupRfpBrowser() {
     const sa = typeof b.set_aside === 'string' ? b.set_aside
       : (b.set_aside && b.set_aside.description) ? b.set_aside.description
       : (b.sa || '');
-    const contracts = b.contracts || [];
-    const emVals  = [...new Set(contracts.map(c => c.em).filter(Boolean))];
-    const tcVals  = [...new Set(contracts.map(c => c.tc).filter(Boolean))];
     return [
       escapeHtml(b.title || b.name || '(untitled)'), // 0
       b.posted_date || b.date || '',                  // 1
@@ -1224,18 +1206,14 @@ function setupRfpBrowser() {
       escapeHtml(b.naics || '—'),                     // 4
       escapeHtml(sa || '—'),                          // 5
       makeChips(b),                                   // 6 labels
-      makeContractsCell(b),                           // 7 contracts Yes/No
-      emVals.join(', ') || '—',                       // 8 eval_method
-      tcVals.join(', ') || '—',                       // 9 tradeoff_code
-      makeSamLink(b),                                 // 10 SAM link
-      b.attachment_count || b.att || 0,               // 11 docs
+      makeSamLink(b),                                 // 7 SAM link
+      b.attachment_count || b.att || 0,               // 8 docs
       // hidden search column
       [
         b.search_text || (rfpDetailByNid[b.nid] || {}).search_text || '',
-        b.sol || b.solicitation_number || '',
-        contracts.map(c => c.vendor || '').join(' '),
-      ].join(' '), // 12 hidden
-      i,                                              // 13 hidden bundle index
+        b.solicitation_number || '',
+      ].join(' '), // 9 hidden
+      i,           // 10 hidden bundle index
     ];
   });
 
@@ -1249,9 +1227,6 @@ function setupRfpBrowser() {
       { title: 'NAICS' },
       { title: 'Set-aside' },
       { title: 'Labels',        orderable: false },
-      { title: 'Contracts',     render: d => d === 'Yes' ? '<span class="chip" style="background:#1B4332;font-size:0.68rem;">Yes</span>' : '<span style="color:var(--color-text-muted)">No</span>' },
-      { title: 'Eval Method' },
-      { title: 'Tradeoff Code' },
       { title: 'SAM.gov',       orderable: false },
       { title: 'Docs',          className: 'num' },
       { title: '_text',         visible: false, searchable: true },
@@ -1271,21 +1246,8 @@ function setupRfpBrowser() {
     },
   });
 
-  function updateContractCards() {
-    if (!rfpDT) return;
-    const rows = rfpDT.rows({ search: 'applied' }).data();
-    let total = 0;
-    for (let i = 0; i < rows.length; i++) {
-      const b = bundles[rows[i][13]];
-      if (b) total += (b.contracts || []).length;
-    }
-    document.getElementById('ccContracts').textContent =
-      total > 0 ? total.toLocaleString() + ' matched' : '0';
-  }
-
-  $('#rfpTable').on('draw.dt', () => { updateRfpCards(); updateContractCards(); });
+  $('#rfpTable').on('draw.dt', () => { updateRfpCards(); });
   updateRfpCards();
-  updateContractCards();
 
   document.getElementById('rfpCards').style.display = '';
   document.getElementById('filterSystem').style.display = '';
@@ -1401,7 +1363,7 @@ function setupRfpBrowser() {
   $('#rfpTable tbody').on('click', 'tr', function() {
     const data = rfpDT.row(this).data();
     if (!data) return;
-    const b = bundles[data[13]];
+    const b = bundles[data[10]];
     const detail = rfpDetailByNid[b.nid] || b;
     openRfpModal(b, detail, rfpDT.search());
   });
@@ -1462,31 +1424,6 @@ function openRfpModal(bundle, detail, query) {
       });
     } else {
       html += `<div style="color:var(--color-text-muted);font-size:0.875rem;">No label snippets for this bundle.</div>`;
-    }
-  }
-
-  // Matched contracts
-  const contracts = bundle.contracts || [];
-  if (contracts.length) {
-    html += `<div class="rfp-modal-section-title">${contracts.length} Matched Contract${contracts.length>1?'s':''}</div>`;
-    html += `<div style="font-size:0.78rem;color:var(--color-text-muted);margin-bottom:0.5rem">Matched via solicitation number ${escapeHtml(bundle.sol||'')}</div>`;
-    html += contracts.slice(0, 20).map(c => {
-      const usaLink = c.key
-        ? `<a href="https://www.usaspending.gov/award/${encodeURIComponent(c.key)}/" target="_blank" style="color:var(--color-accent);margin-left:0.5rem;font-size:0.75rem;" onclick="event.stopPropagation()">USASpending ↗</a>`
-        : '';
-      return `
-      <div style="padding:0.5rem 0.75rem;border-left:3px solid var(--color-gold);margin:0.375rem 0;background:var(--color-surface);font-size:0.8125rem;">
-        <strong>${escapeHtml(c.vendor||'')}</strong>${usaLink}
-        &middot; ${escapeHtml(c.em||'')}${c.tc ? ` <span style="font-size:0.7rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:0 4px;">${escapeHtml(c.tc)}</span>` : ''}
-        &middot; ${escapeHtml(c.ob||'')}
-        &middot; ${escapeHtml(c.ct||'')}
-        &middot; FY${escapeHtml(String(c.fy||''))}
-        &middot; ${escapeHtml(c.date||'')}
-      </div>
-    `;
-    }).join('');
-    if (contracts.length > 20) {
-      html += `<div style="font-size:0.78rem;color:var(--color-text-muted);">… and ${contracts.length - 20} more</div>`;
     }
   }
 
