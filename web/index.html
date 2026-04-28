@@ -585,7 +585,7 @@
 <header class="site-header">
   <div class="site-container">
     <h1>How the Federal Government Buys IT Services</h1>
-    <p class="site-subtitle">Federal IT procurement &mdash; NAICS 541511/512</p>
+    <p class="site-subtitle">Federal IT procurement &mdash; NAICS <span class="naics-scope">541511/512</span></p>
   </div>
 </header>
 
@@ -741,7 +741,7 @@
   <footer class="site-footer">
     <p>Data: <a href="https://www.usaspending.gov" target="_blank">USASpending</a> &middot;
        <a href="https://govcon.dev" target="_blank">Tango API</a> (FPDS) &middot;
-       NAICS 541511/512 &middot;
+       NAICS <span class="naics-scope">541511/512</span> &middot;
        <a href="https://github.com/abigailhaddad/procurement-methods" target="_blank">Source code</a></p>
   </footer>
 
@@ -803,6 +803,12 @@ async function loadAll() {
     const maxYear = rfpDates[rfpDates.length - 1].slice(0, 4);
     const rfpText = minYear === maxYear ? minYear : `${minYear}–${maxYear}`;
     document.querySelectorAll('.fy-range-rfps').forEach(el => { el.textContent = rfpText; });
+  }
+
+  // Populate NAICS scope from actual bundles
+  const naicsCodes = [...new Set((DATA.rfp_bundles || []).map(b => b.naics).filter(Boolean))].sort();
+  if (naicsCodes.length) {
+    document.querySelectorAll('.naics-scope').forEach(el => { el.textContent = naicsCodes.join(', '); });
   }
 
   if (DATA.rfp_bundles) {
