@@ -50,13 +50,31 @@ _GENERIC_TITLES = {
     "contractor", "the contractor", "vendor", "the vendor",
     "awardee", "the awardee", "offeror", "the offeror",
     "bidder", "the bidder", "company", "firm", "team",
+    "personnel", "staff", "employees",
     # Govt-side roles that can still slip past the prompt
-    "contracting officer", "contracting officer's representative",
-    "contracting officer’s representative",  # smart-quote variant
     "cor", "cotr", "aco", "pco", "office poc", "agency poc",
     "technical poc", "tpoc", "government project manager",
     "government program manager",
 }
+
+# Titles matching any of these substring/regex patterns are dropped.
+# Caught real noise from a manual sample:
+#   "Senior Contracting Officer (Consultant)"  → contracting officer anywhere
+#   "Personnel performing subtask 4.1.1"       → describing where, not who
+#   "contractor personnel performing this..."  → same pattern
+#   "FFRDCs or contractor consultant/advisors  → entity category, not labor cat
+#    to the Government"
+#   "non-Government advisors"                  → same
+_TITLE_NOISE = re.compile(
+    r"contracting\s+officer"                          # CO/COR variants
+    r"|^\s*personnel\s+performing\b"                  # "personnel performing X"
+    r"|^\s*contractor\s+personnel\b"                  # "contractor personnel ..."
+    r"|\bffrdc"                                       # FFRDC entity
+    r"|\bnon[- ]government\s+(?:advisor|consultant)"  # non-Gov advisor
+    r"|\badvisor[s]?\s+to\s+the\s+government\b"       # "...advisors to the Government"
+    r"|^\s*(?:government|federal)\s+(?:lead|employee|advisor)\b",
+    re.IGNORECASE,
+)
 
 
 def _has_concrete_qual(role: dict) -> bool:
@@ -72,8 +90,11 @@ def _filter_personnel(roles: list[dict]) -> list[dict]:
     """Drop generic-counterparty titles and roles with zero concrete quals."""
     out = []
     for r in roles:
-        title = (r.get("title") or "").strip().lower().rstrip("(s)")
+        title_raw = (r.get("title") or "").strip()
+        title = title_raw.lower().rstrip("(s)").strip()
         if title in _GENERIC_TITLES:
+            continue
+        if _TITLE_NOISE.search(title_raw):
             continue
         if not _has_concrete_qual(r):
             continue
