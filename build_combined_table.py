@@ -92,11 +92,11 @@ if rfp_matches_path.exists():
     print(f"  +{added} from rfp_contract_matches.json")
 
 # ── Load RFP bundles and enrich with matched contracts ────────────────────────
-NAICS_KEEP = {"541511", "541512"}
+NAICS_KEEP = {"541511", "541512", "541519", "518210"}
 print("Loading RFP bundles…")
 bundles = [b for b in json.loads(Path("web/data/rfp_bundles.json").read_text())
            if b.get("naics", "") in NAICS_KEEP]
-print(f"  {len(bundles):,} bundles after NAICS filter (541511 + 541512)")
+print(f"  {len(bundles):,} bundles after NAICS filter ({', '.join(sorted(NAICS_KEEP))})")
 
 rows = []
 matched_bundles = 0
