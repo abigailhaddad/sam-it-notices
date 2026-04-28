@@ -20,9 +20,9 @@ on:
         required: false
         default: ""
       include_award_notices:
-        description: "Process Award Notice attachments for CLIN/labor-category extraction (default: true)"
+        description: "Process Award Notice attachments (off by default — high volume, less useful)"
         type: boolean
-        default: true
+        default: false
   schedule:
     - cron: "5 0 * * *"  # 00:05 UTC daily — a few minutes after SAM's
                           # midnight-UTC quota reset (≈ 8:05 PM ET)

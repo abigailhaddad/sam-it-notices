@@ -603,7 +603,7 @@
       <div style="width:100%;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin-bottom:0.25rem;">RFP signals <span id="rcDateRange"></span></div>
       <div class="rfp-card">
         <div class="rfp-card-n" id="rcTotal">—</div>
-        <div class="rfp-card-label">RFPs</div>
+        <div class="rfp-card-label">Notices</div>
       </div>
       <div class="rfp-card rfp-card-clickable" data-label-key="shall_count" data-chip="shall">
         <div class="rfp-card-n" id="rcShall">—</div>
@@ -645,19 +645,7 @@
     <!-- DataTable -->
     <div style="overflow-x:auto;">
       <table id="rfpTable" class="display" style="width:100%">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Department</th>
-            <th>NAICS</th>
-            <th>Set-aside</th>
-            <th>Labels</th>
-            <th>SAM.gov</th>
-            <th>Docs</th>
-          </tr>
-        </thead>
+        <thead></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -955,12 +943,12 @@ function applyFiltersToTable() {
 
   // Column-specific searches
   const titleVals = getFilterValues('title');
-  rfpDT.column(0).search(titleVals.length ? titleVals.join('|') : '', true, false);
-  rfpDT.column(1).search('', true, false); // date range handled in custom search
-  colSearch(2, getFilterValues('type'));
-  colSearch(3, getFilterValues('dept'));
-  colSearch(4, getFilterValues('naics'));
-  colSearch(5, getFilterValues('sa'), false);
+  rfpDT.column(COL.title).search(titleVals.length ? titleVals.join('|') : '', true, false);
+  rfpDT.column(COL.date).search('', true, false); // date range handled in custom search
+  colSearch(COL.type,  getFilterValues('type'));
+  colSearch(COL.dept,  getFilterValues('dept'));
+  colSearch(COL.naics, getFilterValues('naics'));
+  colSearch(COL.sa,    getFilterValues('sa'), false);
 
   rfpDT.draw();
   renderFilterChips();
@@ -977,16 +965,106 @@ function applyFiltersToTable() {
 // ── Two-step filter modal ────────────────────────────────────────────────────
 let filterBundles = [];
 
-const FILTER_COLS = [
-  { field: 'title',     label: 'Title',                  type: 'text' },
-  { field: 'date',      label: 'Posted Date',            type: 'daterange' },
-  { field: 'type',      label: 'Notice Type',            type: 'multiselect', getVals: b => b.type },
-  { field: 'dept',      label: 'Department',             type: 'multiselect', getVals: b => b.dept || b.department },
-  { field: 'naics',     label: 'NAICS',                  type: 'multiselect', getVals: b => b.naics },
-  { field: 'sa',        label: 'Set-aside',              type: 'multiselect', getVals: b => typeof b.set_aside === 'string' ? b.set_aside : b.sa },
-  { field: 'label',     label: 'Label',                  type: 'multiselect', staticOptions: ['shall clauses', 'user vocab', 'agile vocab', 'RTM'] },
-  { field: 'text',      label: 'Full text search',       type: 'text' },
+// Helper to get set-aside string
+function getSa(b) {
+  return typeof b.set_aside === 'string' ? b.set_aside
+    : (b.set_aside && b.set_aside.description) ? b.set_aside.description
+    : (b.sa || '');
+}
+
+function makeDataBadges(b) {
+  const out = [];
+  if (b.personnel && b.personnel.length)
+    out.push('<span class="rfp-badge-green">Personnel roles</span>');
+  if (b.label_hits && Object.keys(b.label_hits).length)
+    out.push('<span class="rfp-badge-amber">Vocabulary signals</span>');
+  if ((b.search_text || '').trim().length > 300 && !(b.search_text || '').trim().startsWith('http'))
+    out.push('<span class="rfp-badge-surface">Full text</span>');
+  if (b.lcats && b.lcats.length)
+    out.push('<span class="rfp-badge-muted">LCATs</span>');
+  return out.join(' ');
+}
+function makeDataSearchText(b) {
+  const parts = [];
+  if (b.personnel && b.personnel.length) parts.push('Personnel roles');
+  if (b.label_hits && Object.keys(b.label_hits).length) parts.push('Vocabulary signals');
+  if ((b.search_text || '').trim().length > 300 && !(b.search_text || '').trim().startsWith('http')) parts.push('Full text');
+  if (b.lcats && b.lcats.length) parts.push('LCATs');
+  return parts.join(' ');
+}
+
+function makeChips(b) {
+  const hits = b.label_hits || b.labels || {};
+  return Object.keys(hits).map(lb => {
+    const m = RFP_LABEL_META[lb] || { short: lb, cls: '' };
+    return `<span class="chip ${m.cls}">${m.short}</span>`;
+  }).join(' ');
+}
+
+function makeSamLink(b) {
+  const url = b.ui_link || b.link || '';
+  return url
+    ? `<a href="${url}" target="_blank" style="color:var(--color-accent);white-space:nowrap;font-size:0.8rem;" onclick="event.stopPropagation()">SAM ↗</a>`
+    : '—';
+}
+
+const RFP_COLS = [
+  { key: 'title',   title: 'Title',      className: 'rfp-title-cell',
+    render: b => escapeHtml(b.title || b.name || '(untitled)'),
+    filterable: 'text', filterLabel: 'Title' },
+  { key: 'date',    title: 'Date',
+    render: b => b.posted_date || b.date || '',
+    filterable: 'daterange', filterLabel: 'Posted Date' },
+  { key: 'type',    title: 'Type',
+    render: b => escapeHtml(b.type || ''),
+    filterable: 'multiselect', filterLabel: 'Notice Type', getVals: b => b.type },
+  { key: 'dept',    title: 'Department',
+    render: b => escapeHtml(b.department || b.dept || ''),
+    filterable: 'multiselect', filterLabel: 'Department', getVals: b => b.dept || b.department },
+  { key: 'naics',   title: 'NAICS',
+    render: b => escapeHtml(b.naics || '—'),
+    filterable: 'multiselect', filterLabel: 'NAICS', getVals: b => b.naics },
+  { key: 'sa',      title: 'Set-aside',
+    render: b => escapeHtml(getSa(b) || '—'),
+    filterable: 'multiselect', filterLabel: 'Set-aside', getVals: b => getSa(b), exactMatch: false },
+  { key: 'labels',  title: 'Labels',     orderable: false,
+    render: b => makeChips(b),
+    filterable: 'multiselect', filterLabel: 'Label',
+    staticOptions: ['shall clauses', 'user vocab', 'agile vocab', 'RTM'] },
+  { key: 'data',    title: 'Data',       orderable: false,
+    render: b => makeDataBadges(b),
+    filterable: 'multiselect', filterLabel: 'Data available',
+    staticOptions: ['Personnel roles', 'Vocabulary signals', 'Full text', 'LCATs'] },
+  { key: 'sam',     title: 'SAM.gov',    orderable: false,
+    render: b => makeSamLink(b) },
+  { key: 'docs',    title: 'Docs',       className: 'num',
+    render: b => b.attachment_count || b.att || 0 },
+  { key: '_text',   title: '_text',      visible: false, searchable: true,
+    render: (b) => [
+      b.search_text || '',
+      b.solicitation_number || '',
+      makeDataSearchText(b),
+    ].join(' ') },
+  { key: '_idx',    title: '_idx',       visible: false, searchable: false,
+    render: (b, i) => i },
 ];
+
+const COL = {};
+RFP_COLS.forEach((c, i) => { COL[c.key] = i; });
+
+const FILTER_COLS = RFP_COLS
+  .filter(c => c.filterable)
+  .map(c => ({
+    field:         c.key,
+    label:         c.filterLabel || c.title,
+    type:          c.filterable,
+    getVals:       c.getVals,
+    staticOptions: c.staticOptions,
+    exactMatch:    c.exactMatch,
+  }));
+
+// Append non-column filters (full text search)
+FILTER_COLS.push({ field: 'text', label: 'Full text search', type: 'text' });
 
 function openFilterModal() {
   const overlay = document.getElementById('filterOverlay');
@@ -1121,30 +1199,21 @@ function closeFilterModal() {
   document.getElementById('filterOverlay').classList.remove('open');
 }
 
-// Custom DataTables search for label and contracts filters
+// Custom DataTables search for label, date, and data-available filters
 $.fn.dataTable.ext.search.push(function(settings, data) {
   if (settings.nTable.id !== 'rfpTable') return true;
   const lbls = getActiveLabels();
-  if (lbls.size && ![...lbls].every(l => data[6].includes(l))) return false;
+  if (lbls.size && ![...lbls].every(l => data[COL.labels].includes(l))) return false;
   const dateFilters = activeFilters.filter(f => f.field === 'date' && f.type === 'daterange');
   for (const f of dateFilters) {
-    const d = data[1] || '';
+    const d = data[COL.date] || '';
     if (f.from && d < f.from) return false;
     if (f.to && d > f.to) return false;
   }
-  const contractVals = activeFilters.filter(f => f.field === 'contracts').flatMap(f => f.values || []);
-  if (contractVals.length && !contractVals.includes(data[7])) return false;
-  const emVals = activeFilters.filter(f => f.field === 'evalmethod').flatMap(f => f.values || []);
-  if (emVals.length) {
-    const cell = data[8] || '';
-    const match = emVals.some(v => v === '(blank)' ? cell === '—' : cell.includes(v));
-    if (!match) return false;
-  }
-  const tradeoffVals = activeFilters.filter(f => f.field === 'tradeoff').flatMap(f => f.values || []);
-  if (tradeoffVals.length) {
-    const cell = data[9] || '';
-    const match = tradeoffVals.some(v => v === '(blank)' ? cell === '—' : cell.includes(v));
-    if (!match) return false;
+  const dataVals = activeFilters.filter(f => f.field === 'data').flatMap(f => f.values || []);
+  if (dataVals.length) {
+    const cell = data[COL._text] || '';
+    if (!dataVals.every(v => cell.includes(v))) return false;
   }
   return true;
 });
@@ -1156,7 +1225,7 @@ function updateRfpCards() {
   const n = rows.length;
   let shall = 0, user = 0, agile = 0, rtm = 0;
   for (let i = 0; i < n; i++) {
-    const lbl = rows[i][6];
+    const lbl = rows[i][COL.labels];
     if (lbl.includes('shall'))  shall++;
     if (lbl.includes('user'))   user++;
     if (lbl.includes('agile'))  agile++;
@@ -1177,61 +1246,17 @@ function setupRfpBrowser() {
   // Build rfp detail lookup (for modal snippets + search_text)
   (DATA.rfp_bundles || []).forEach(b => { rfpDetailByNid[b.notice_id] = b; });
 
-
-  function makeChips(b) {
-    const hits = b.label_hits || b.labels || {};
-    return Object.keys(hits).map(lb => {
-      const m = RFP_LABEL_META[lb] || { short: lb, cls: '' };
-      const n = hits[lb];
-      return `<span class="chip ${m.cls}">${m.short}</span>`;
-    }).join(' ');
-  }
-
-  function makeSamLink(b) {
-    const url = b.ui_link || b.link || '';
-    return url
-      ? `<a href="${url}" target="_blank" style="color:var(--color-accent);white-space:nowrap;font-size:0.8rem;" onclick="event.stopPropagation()">SAM ↗</a>`
-      : '—';
-  }
-
-  const tableData = bundles.map((b, i) => {
-    const sa = typeof b.set_aside === 'string' ? b.set_aside
-      : (b.set_aside && b.set_aside.description) ? b.set_aside.description
-      : (b.sa || '');
-    return [
-      escapeHtml(b.title || b.name || '(untitled)'), // 0
-      b.posted_date || b.date || '',                  // 1
-      escapeHtml(b.type || ''),                       // 2
-      escapeHtml(b.department || b.dept || ''),       // 3
-      escapeHtml(b.naics || '—'),                     // 4
-      escapeHtml(sa || '—'),                          // 5
-      makeChips(b),                                   // 6 labels
-      makeSamLink(b),                                 // 7 SAM link
-      b.attachment_count || b.att || 0,               // 8 docs
-      // hidden search column
-      [
-        b.search_text || (rfpDetailByNid[b.nid] || {}).search_text || '',
-        b.solicitation_number || '',
-      ].join(' '), // 9 hidden
-      i,           // 10 hidden bundle index
-    ];
-  });
+  const tableData = bundles.map((b, i) => RFP_COLS.map(c => c.render(b, i)));
 
   rfpDT = $('#rfpTable').DataTable({
     data: tableData,
-    columns: [
-      { title: 'Title',         className: 'rfp-title-cell' },
-      { title: 'Date' },
-      { title: 'Type' },
-      { title: 'Department' },
-      { title: 'NAICS' },
-      { title: 'Set-aside' },
-      { title: 'Labels',        orderable: false },
-      { title: 'SAM.gov',       orderable: false },
-      { title: 'Docs',          className: 'num' },
-      { title: '_text',         visible: false, searchable: true },
-      { title: '_idx',          visible: false, searchable: false },
-    ],
+    columns: RFP_COLS.map(c => ({
+      title:      c.title,
+      className:  c.className || '',
+      orderable:  c.orderable !== false,
+      visible:    c.visible !== false,
+      searchable: c.searchable || false,
+    })),
     order: [[1, 'desc']],
     pageLength: 25,
     lengthMenu: [25, 50, 100],
@@ -1240,7 +1265,7 @@ function setupRfpBrowser() {
       search: '',
       searchPlaceholder: 'Search title, dept, set-aside, or full RFP text…',
       lengthMenu: 'Show _MENU_ per page',
-      info: '_START_–_END_ of _TOTAL_ RFPs',
+      info: '_START_–_END_ of _TOTAL_ notices',
       infoFiltered: '(filtered from _MAX_)',
       paginate: { previous: '‹', next: '›' },
     },
@@ -1295,7 +1320,7 @@ function setupRfpBrowser() {
           ${vocab.terms.map(t => `<span style="background:rgba(27,67,50,0.1);border:1px solid var(--color-accent);border-radius:999px;padding:0.125rem 0.5rem;font-size:0.75rem;color:var(--color-accent);font-family:var(--font-mono)">${t}</span>`).join('')}
         </div>
         <div style="margin-top:0.625rem;padding-top:0.5rem;border-top:1px solid var(--color-border);">
-          <a href="#" class="vocab-filter-link" data-chip="${card.dataset.chip}" style="font-size:0.8rem;color:var(--color-accent);font-weight:600;">Filter to these RFPs →</a>
+          <a href="#" class="vocab-filter-link" data-chip="${card.dataset.chip}" style="font-size:0.8rem;color:var(--color-accent);font-weight:600;">Filter to these notices →</a>
         </div>
       `;
       pop.style.cssText = 'position:absolute;z-index:300;background:white;border:1px solid var(--color-border);border-radius:0.5rem;box-shadow:var(--shadow-md);padding:0.875rem 1rem;max-width:280px;';
@@ -1363,7 +1388,7 @@ function setupRfpBrowser() {
   $('#rfpTable tbody').on('click', 'tr', function() {
     const data = rfpDT.row(this).data();
     if (!data) return;
-    const b = bundles[data[10]];
+    const b = bundles[data[COL._idx]];
     const detail = rfpDetailByNid[b.nid] || b;
     openRfpModal(b, detail, rfpDT.search());
   });

@@ -299,6 +299,8 @@ def aggregate(bundles, personnel_cache: dict | None = None):
         naics = (m.get("naics_code") or "").strip()
         if naics not in NAICS_KEEP:
             continue
+        if (m.get("type") or "") == "Award Notice":
+            continue
         total += 1
         atts = b.get("attachments") or []
         if atts:
@@ -384,6 +386,18 @@ def aggregate(bundles, personnel_cache: dict | None = None):
         })
 
     bundle_rows.sort(key=lambda r: (r.get("posted_date") or "", r.get("title") or ""), reverse=True)
+
+    # Deduplicate by solicitation_number — keep latest posting when SAM reposts the same sol
+    seen_sol: set[str] = set()
+    deduped: list[dict] = []
+    for row in bundle_rows:
+        sol = (row.get("solicitation_number") or "").strip()
+        if sol and sol in seen_sol:
+            continue
+        if sol:
+            seen_sol.add(sol)
+        deduped.append(row)
+    bundle_rows = deduped
 
     label_keys = [k for k, _, _ in LABELS]
 

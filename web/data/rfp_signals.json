@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-28T02:25Z",
-  "total_bundles": 1115,
-  "with_attachments": 403,
+  "generated_at": "2026-04-28T03:20Z",
+  "total_bundles": 485,
+  "with_attachments": 379,
   "date_range": {
     "from": "2023-02-16",
     "to": "2026-04-27"
@@ -11,8 +11,8 @@
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 320,
-      "percent": 28.7,
+      "count": 310,
+      "percent": 63.9,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,8 +41,8 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 191,
-      "percent": 17.1,
+      "count": 190,
+      "percent": 39.2,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 86,
-      "percent": 7.7,
+      "count": 85,
+      "percent": 17.5,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -102,7 +102,7 @@
       "label": "Mentions an RTM",
       "description": "requirements traceability matrix",
       "count": 16,
-      "percent": 1.4,
+      "percent": 3.3,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -130,36 +130,28 @@
   ],
   "top_departments": [
     {
-      "name": "GENERAL SERVICES ADMINISTRATION",
-      "count": 576
-    },
-    {
       "name": "DEPT OF DEFENSE",
-      "count": 219
+      "count": 206
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 148
+      "count": 129
     },
     {
       "name": "COMMERCE, DEPARTMENT OF",
-      "count": 25
+      "count": 22
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 25
-    },
-    {
-      "name": "INTERIOR, DEPARTMENT OF THE",
-      "count": 18
+      "count": 19
     },
     {
       "name": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
-      "count": 15
+      "count": 14
     },
     {
-      "name": "ENERGY, DEPARTMENT OF",
-      "count": 14
+      "name": "INTERIOR, DEPARTMENT OF THE",
+      "count": 12
     },
     {
       "name": "FEDERAL DEPOSIT INSURANCE CORPORATION",
@@ -167,14 +159,18 @@
     },
     {
       "name": "HOMELAND SECURITY, DEPARTMENT OF",
-      "count": 10
+      "count": 9
+    },
+    {
+      "name": "JUSTICE, DEPARTMENT OF",
+      "count": 9
+    },
+    {
+      "name": "TRANSPORTATION, DEPARTMENT OF",
+      "count": 7
     }
   ],
   "top_notice_types": [
-    {
-      "name": "Award Notice",
-      "count": 630
-    },
     {
       "name": "Sources Sought",
       "count": 166
@@ -202,82 +198,62 @@
   ],
   "by_dept": [
     {
-      "dept": "GENERAL SERVICES ADMINISTRATION",
-      "total": 576,
-      "pcts": {
-        "shall_count": 0.5,
-        "has_user_vocab": 0.5,
-        "has_agile_vocab": 0.5,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
       "dept": "DEPT OF DEFENSE",
-      "total": 219,
+      "total": 206,
       "pcts": {
-        "shall_count": 49.8,
-        "has_user_vocab": 25.1,
-        "has_agile_vocab": 15.5,
-        "mentions_rtm": 3.7
+        "shall_count": 52.4,
+        "has_user_vocab": 26.7,
+        "has_agile_vocab": 16.5,
+        "mentions_rtm": 3.9
       }
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 148,
+      "total": 129,
       "pcts": {
-        "shall_count": 76.4,
-        "has_user_vocab": 43.2,
-        "has_agile_vocab": 18.2,
-        "mentions_rtm": 4.7
+        "shall_count": 81.4,
+        "has_user_vocab": 48.8,
+        "has_agile_vocab": 20.2,
+        "mentions_rtm": 5.4
       }
     },
     {
       "dept": "COMMERCE, DEPARTMENT OF",
-      "total": 25,
+      "total": 22,
       "pcts": {
-        "shall_count": 72.0,
-        "has_user_vocab": 32.0,
-        "has_agile_vocab": 12.0,
-        "mentions_rtm": 4.0
+        "shall_count": 81.8,
+        "has_user_vocab": 36.4,
+        "has_agile_vocab": 13.6,
+        "mentions_rtm": 4.5
       }
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 25,
+      "total": 19,
       "pcts": {
-        "shall_count": 40.0,
-        "has_user_vocab": 36.0,
-        "has_agile_vocab": 16.0,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "dept": "INTERIOR, DEPARTMENT OF THE",
-      "total": 18,
-      "pcts": {
-        "shall_count": 44.4,
-        "has_user_vocab": 33.3,
-        "has_agile_vocab": 11.1,
+        "shall_count": 52.6,
+        "has_user_vocab": 47.4,
+        "has_agile_vocab": 21.1,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
-      "total": 15,
+      "total": 14,
       "pcts": {
-        "shall_count": 26.7,
+        "shall_count": 21.4,
         "has_user_vocab": 0.0,
         "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
     {
-      "dept": "ENERGY, DEPARTMENT OF",
-      "total": 14,
+      "dept": "INTERIOR, DEPARTMENT OF THE",
+      "total": 12,
       "pcts": {
-        "shall_count": 14.3,
-        "has_user_vocab": 7.1,
-        "has_agile_vocab": 0.0,
+        "shall_count": 66.7,
+        "has_user_vocab": 50.0,
+        "has_agile_vocab": 16.7,
         "mentions_rtm": 0.0
       }
     },
@@ -293,11 +269,11 @@
     },
     {
       "dept": "HOMELAND SECURITY, DEPARTMENT OF",
-      "total": 10,
+      "total": 9,
       "pcts": {
-        "shall_count": 40.0,
-        "has_user_vocab": 40.0,
-        "has_agile_vocab": 10.0,
+        "shall_count": 44.4,
+        "has_user_vocab": 44.4,
+        "has_agile_vocab": 11.1,
         "mentions_rtm": 0.0
       }
     },
@@ -313,11 +289,21 @@
     },
     {
       "dept": "TRANSPORTATION, DEPARTMENT OF",
-      "total": 8,
+      "total": 7,
       "pcts": {
-        "shall_count": 75.0,
-        "has_user_vocab": 62.5,
-        "has_agile_vocab": 37.5,
+        "shall_count": 85.7,
+        "has_user_vocab": 71.4,
+        "has_agile_vocab": 42.9,
+        "mentions_rtm": 0.0
+      }
+    },
+    {
+      "dept": "ENERGY, DEPARTMENT OF",
+      "total": 7,
+      "pcts": {
+        "shall_count": 28.6,
+        "has_user_vocab": 14.3,
+        "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
@@ -364,28 +350,8 @@
       }
     },
     {
-      "month": "2024-09",
-      "total": 2,
-      "pcts": {
-        "shall_count": 0.0,
-        "has_user_vocab": 0.0,
-        "has_agile_vocab": 0.0,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
       "month": "2024-10",
-      "total": 38,
-      "pcts": {
-        "shall_count": 0.0,
-        "has_user_vocab": 0.0,
-        "has_agile_vocab": 0.0,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "month": "2024-11",
-      "total": 32,
+      "total": 1,
       "pcts": {
         "shall_count": 0.0,
         "has_user_vocab": 0.0,
@@ -395,27 +361,7 @@
     },
     {
       "month": "2024-12",
-      "total": 27,
-      "pcts": {
-        "shall_count": 0.0,
-        "has_user_vocab": 0.0,
-        "has_agile_vocab": 0.0,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "month": "2025-01",
-      "total": 31,
-      "pcts": {
-        "shall_count": 0.0,
-        "has_user_vocab": 0.0,
-        "has_agile_vocab": 0.0,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "month": "2025-02",
-      "total": 33,
+      "total": 2,
       "pcts": {
         "shall_count": 0.0,
         "has_user_vocab": 0.0,
@@ -425,79 +371,79 @@
     },
     {
       "month": "2025-03",
-      "total": 48,
+      "total": 1,
       "pcts": {
-        "shall_count": 2.1,
-        "has_user_vocab": 2.1,
-        "has_agile_vocab": 2.1,
+        "shall_count": 100.0,
+        "has_user_vocab": 100.0,
+        "has_agile_vocab": 100.0,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2025-04",
-      "total": 57,
+      "total": 2,
       "pcts": {
-        "shall_count": 3.5,
-        "has_user_vocab": 3.5,
+        "shall_count": 100.0,
+        "has_user_vocab": 100.0,
         "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2025-05",
-      "total": 43,
+      "total": 2,
       "pcts": {
-        "shall_count": 2.3,
-        "has_user_vocab": 2.3,
-        "has_agile_vocab": 2.3,
+        "shall_count": 50.0,
+        "has_user_vocab": 50.0,
+        "has_agile_vocab": 50.0,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2025-06",
-      "total": 35,
+      "total": 3,
       "pcts": {
-        "shall_count": 2.9,
-        "has_user_vocab": 2.9,
-        "has_agile_vocab": 2.9,
+        "shall_count": 33.3,
+        "has_user_vocab": 33.3,
+        "has_agile_vocab": 33.3,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2025-07",
-      "total": 51,
+      "total": 10,
       "pcts": {
-        "shall_count": 5.9,
-        "has_user_vocab": 3.9,
-        "has_agile_vocab": 2.0,
+        "shall_count": 30.0,
+        "has_user_vocab": 20.0,
+        "has_agile_vocab": 10.0,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2025-08",
-      "total": 33,
+      "total": 4,
       "pcts": {
-        "shall_count": 3.0,
-        "has_user_vocab": 3.0,
+        "shall_count": 25.0,
+        "has_user_vocab": 25.0,
         "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2025-09",
-      "total": 48,
+      "total": 9,
       "pcts": {
-        "shall_count": 6.2,
-        "has_user_vocab": 2.1,
-        "has_agile_vocab": 2.1,
-        "mentions_rtm": 2.1
+        "shall_count": 33.3,
+        "has_user_vocab": 11.1,
+        "has_agile_vocab": 11.1,
+        "mentions_rtm": 11.1
       }
     },
     {
       "month": "2025-10",
-      "total": 31,
+      "total": 3,
       "pcts": {
-        "shall_count": 3.2,
+        "shall_count": 33.3,
         "has_user_vocab": 0.0,
         "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
@@ -505,62 +451,62 @@
     },
     {
       "month": "2025-11",
-      "total": 30,
+      "total": 4,
       "pcts": {
-        "shall_count": 6.7,
-        "has_user_vocab": 3.3,
+        "shall_count": 50.0,
+        "has_user_vocab": 25.0,
         "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2025-12",
-      "total": 27,
+      "total": 8,
       "pcts": {
-        "shall_count": 7.4,
-        "has_user_vocab": 7.4,
+        "shall_count": 25.0,
+        "has_user_vocab": 25.0,
         "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2026-01",
-      "total": 32,
+      "total": 15,
       "pcts": {
-        "shall_count": 21.9,
-        "has_user_vocab": 9.4,
-        "has_agile_vocab": 6.2,
+        "shall_count": 46.7,
+        "has_user_vocab": 20.0,
+        "has_agile_vocab": 13.3,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2026-02",
-      "total": 33,
+      "total": 19,
       "pcts": {
-        "shall_count": 36.4,
-        "has_user_vocab": 12.1,
-        "has_agile_vocab": 9.1,
+        "shall_count": 63.2,
+        "has_user_vocab": 21.1,
+        "has_agile_vocab": 15.8,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2026-03",
-      "total": 88,
+      "total": 67,
       "pcts": {
-        "shall_count": 55.7,
-        "has_user_vocab": 38.6,
-        "has_agile_vocab": 18.2,
+        "shall_count": 67.2,
+        "has_user_vocab": 49.3,
+        "has_agile_vocab": 23.9,
         "mentions_rtm": 0.0
       }
     },
     {
       "month": "2026-04",
-      "total": 394,
+      "total": 333,
       "pcts": {
-        "shall_count": 59.4,
-        "has_user_vocab": 35.0,
-        "has_agile_vocab": 15.2,
-        "mentions_rtm": 3.8
+        "shall_count": 68.5,
+        "has_user_vocab": 41.4,
+        "has_agile_vocab": 17.7,
+        "mentions_rtm": 4.5
       }
     }
   ]
