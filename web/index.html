@@ -1463,7 +1463,13 @@ function openRfpModal(bundle, detail, query) {
               ${hasEdu   ? `<td style="padding:0.3rem 0.5rem;">${escapeHtml(r.education || '—')}</td>` : ''}
               ${hasCerts ? `<td style="padding:0.3rem 0.5rem;">${(r.certifications||[]).map(c => escapeHtml(c)).join(', ') || '—'}</td>` : ''}
               <td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.75rem;">${escapeHtml(r.brief_description || '')}</td>
-              ${hasSource ? `<td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.7rem;">${escapeHtml(r.source_filename || '—')}</td>` : ''}
+              ${hasSource ? (() => {
+                if (!r.source_filename) return `<td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.7rem;">—</td>`;
+                const a = ((detail || bundle).attachments || []).find(x => x.filename === r.source_filename);
+                return a && a.url
+                  ? `<td style="padding:0.3rem 0.5rem;font-size:0.7rem;"><a href="${a.url}" target="_blank" rel="noopener" style="color:var(--color-accent);">${escapeHtml(r.source_filename)} &#8599;</a></td>`
+                  : `<td style="padding:0.3rem 0.5rem;color:var(--color-text-muted);font-size:0.7rem;">${escapeHtml(r.source_filename)}</td>`;
+              })() : ''}
             </tr>`).join('')}
           </tbody>
         </table>
