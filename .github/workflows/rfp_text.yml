@@ -45,6 +45,7 @@ jobs:
       CF_R2_ACCESS_KEY_ID: ${{ secrets.CF_R2_ACCESS_KEY_ID }}
       CF_R2_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_SECRET_ACCESS_KEY }}
       SAM_API_KEY: ${{ secrets.SAM_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -71,6 +72,10 @@ jobs:
             ARGS="$ARGS --include-award-notices"
           fi
           python rfp_text_pipeline.py $ARGS
+
+      - name: Extract personnel roles from new bundles
+        if: always() && inputs.dry_run != true
+        run: python extract_personnel.py
 
       # Rebuild even when the pipeline exited 1 (e.g. SAM 429 mid-window) —
       # bundles already pushed to R2 this run should still make it to the dashboard.
