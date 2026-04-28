@@ -3,7 +3,11 @@ import json
 from pathlib import Path
 
 DATA = Path("web/data")
-NAICS_VALID = {"541511", "541512", "541519", "518210"}
+# Mirror DEFAULT_NAICS_PREFIXES from rfp_text_pipeline.py.
+NAICS_VALID = {
+    "541511", "541512", "541513", "541519", "518210",
+    "541330", "541611", "541618", "541690", "541715", "541990",
+}
 
 
 def load(name):

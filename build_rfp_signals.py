@@ -292,7 +292,11 @@ def aggregate(bundles, personnel_cache: dict | None = None):
     # by_month: "YYYY-MM" -> {total, label_key -> hit_count}
     month_stats: dict[str, dict] = {}
 
-    NAICS_KEEP = {"541511", "541512", "541519", "518210"}
+    # Mirror DEFAULT_NAICS_PREFIXES from rfp_text_pipeline.py — keep in sync.
+    NAICS_KEEP = {
+        "541511", "541512", "541513", "541519", "518210",
+        "541330", "541611", "541618", "541690", "541715", "541990",
+    }
 
     for b in bundles:
         m = b.get("metadata") or {}
@@ -367,6 +371,14 @@ def aggregate(bundles, personnel_cache: dict | None = None):
         nid   = b.get("notice_id") or ""
         personnel = (personnel_cache or {}).get(nid) or None
 
+        # Slim attachment list for the dashboard: filename + public SAM URL
+        # only. Skip extracted text + binary metadata to keep the JSON small.
+        attachment_links = [
+            {"filename": a.get("filename"), "url": a.get("url")}
+            for a in atts
+            if a.get("url")
+        ]
+
         bundle_rows.append({
             "notice_id":          nid,
             "solicitation_number": m.get("solicitation_number"),
@@ -379,6 +391,7 @@ def aggregate(bundles, personnel_cache: dict | None = None):
             "ui_link":            m.get("ui_link"),
             "label_hits":         label_hits,
             "attachment_count":   len(atts),
+            "attachments":        attachment_links,
             "snippets":           snippets,
             "lcats":              lcats or None,
             "personnel":          personnel,

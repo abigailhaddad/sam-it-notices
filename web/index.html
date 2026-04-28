@@ -1344,6 +1344,20 @@ function openRfpModal(bundle, detail, query) {
     ${(bundle.ui_link||bundle.link) ? ` &middot; <a href="${bundle.ui_link||bundle.link}" target="_blank">Open on SAM.gov &#8599;</a>` : ''}
   </div>`;
 
+  // Direct attachment downloads (public SAM.gov S3 URLs)
+  const atts = (detail || bundle).attachments || [];
+  if (atts.length) {
+    html += `<div class="rfp-modal-section-title">Attachments (${atts.length})</div>`;
+    html += `<div style="display:flex;flex-direction:column;gap:0.25rem;margin-bottom:0.75rem;">` +
+      atts.map(a => {
+        const name = a.filename || 'attachment';
+        return a.url
+          ? `<a href="${a.url}" target="_blank" rel="noopener" style="color:var(--color-accent);font-size:0.85rem;">${escapeHtml(name)} &#8599;</a>`
+          : `<span style="color:var(--color-text-muted);font-size:0.85rem;">${escapeHtml(name)}</span>`;
+      }).join('') +
+      `</div>`;
+  }
+
   // Full-text search results
   const searchText = (detail || bundle).search_text || '';
   if (q && searchText) {
