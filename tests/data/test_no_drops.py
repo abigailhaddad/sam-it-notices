@@ -17,6 +17,11 @@ def load_baseline():
 
 
 def test_no_rfp_bundles_dropped():
+    """A bundle dropping out is fine when it was rotated by a newer
+    repost of the same solicitation_number — build_rfp_signals.py dedups
+    by sol# and keeps the latest. Only fail when a bundle disappears
+    AND its solicitation_number is gone too.
+    """
     baseline = load_baseline()
     if "rfp_bundles" not in baseline:
         pytest.skip("No rfp_bundles baseline")
@@ -25,11 +30,25 @@ def test_no_rfp_bundles_dropped():
     if not rfp_path.exists():
         pytest.skip("rfp_bundles.json not available")
 
-    current_ids = {b["notice_id"] for b in json.loads(rfp_path.read_text()) if b.get("notice_id")}
+    current = json.loads(rfp_path.read_text())
+    current_ids  = {b["notice_id"] for b in current if b.get("notice_id")}
+    current_sols = {(b.get("solicitation_number") or "").strip()
+                    for b in current if b.get("solicitation_number")}
+
     baseline_ids = set(baseline["rfp_bundles"]["notice_ids"])
-    dropped = baseline_ids - current_ids
-    assert not dropped, (
-        f"CRITICAL: {len(dropped)} bundles dropped from baseline.\n"
-        f"Examples: {sorted(dropped)[:5]}\n"
+    # Optional sol# map (added by update_baseline.py); older baselines may lack it
+    nid_to_sol = baseline["rfp_bundles"].get("notice_id_to_sol", {})
+
+    really_dropped = []
+    for nid in baseline_ids - current_ids:
+        sol = (nid_to_sol.get(nid) or "").strip()
+        if sol and sol in current_sols:
+            continue  # rotated to a newer noticeId for the same sol#
+        really_dropped.append(nid)
+
+    assert not really_dropped, (
+        f"CRITICAL: {len(really_dropped)} bundles dropped from baseline "
+        f"AND their solicitation_number is also gone.\n"
+        f"Examples: {sorted(really_dropped)[:5]}\n"
         f"If intentional, re-run tests/data/update_baseline.py"
     )

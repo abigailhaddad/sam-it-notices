@@ -105,13 +105,21 @@ jobs:
         if: always() && inputs.dry_run != true
         run: python -m pytest tests/frontend/ -v --tb=short
 
+      # Raise the baseline floor only after both test suites pass — so a
+      # regression that drops legit bundles still fails. Dedup-by-sol#
+      # legitimately rotates noticeIds when SAM reposts; this updates the
+      # floor so those rotations don't fail the next run.
+      - name: Update baseline (raise the floor)
+        if: always() && inputs.dry_run != true
+        run: python tests/data/update_baseline.py
+
       - name: Commit updated dashboard JSONs
         id: commit
         if: always() && inputs.dry_run != true
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add web/data/rfp_signals.json web/data/rfp_bundles.json
+          git add web/data/rfp_signals.json web/data/rfp_bundles.json tests/data/baseline.json
           if git diff --cached --quiet; then
             echo "No dashboard changes to commit."
             echo "changed=false" >> "$GITHUB_OUTPUT"
