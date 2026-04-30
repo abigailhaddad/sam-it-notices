@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-04-29T01:58Z",
-  "total_bundles": 1089,
-  "with_attachments": 820,
+  "generated_at": "2026-04-30T01:20Z",
+  "total_bundles": 1106,
+  "with_attachments": 834,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-04-28"
+    "to": "2026-04-29"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 689,
-      "percent": 63.3,
+      "count": 701,
+      "percent": 63.4,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,8 +41,8 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 387,
-      "percent": 35.5,
+      "count": 395,
+      "percent": 35.7,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -59,11 +59,11 @@
           "ui_link": "https://sam.gov/workspace/contract/opp/00754905580c472c872bc95ce43dc9d9/view"
         },
         {
-          "title": "RACER Maintenance Support Service",
+          "title": "R499--TBM and Accounting Technical Enablement  (VA-26-00004314)  FY26 Acquisition",
           "type": "Sources Sought",
-          "department": "DEPT OF DEFENSE",
-          "posted_date": "2026-03-30",
-          "ui_link": "https://sam.gov/workspace/contract/opp/018775d0071a4a408d6163a3723d7ff7/view"
+          "department": "VETERANS AFFAIRS, DEPARTMENT OF",
+          "posted_date": "2026-04-29",
+          "ui_link": "https://sam.gov/workspace/contract/opp/013c157ac32d4647942a48405d275ec0/view"
         }
       ]
     },
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 169,
-      "percent": 15.5,
+      "count": 176,
+      "percent": 15.9,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -89,11 +89,11 @@
           "ui_link": "https://sam.gov/workspace/contract/opp/00754905580c472c872bc95ce43dc9d9/view"
         },
         {
-          "title": "Request for Information - USACE-HPCMP HITS-UIII",
+          "title": "R499--TBM and Accounting Technical Enablement  (VA-26-00004314)  FY26 Acquisition",
           "type": "Sources Sought",
-          "department": "DEPT OF DEFENSE",
-          "posted_date": "2026-02-17",
-          "ui_link": "https://sam.gov/workspace/contract/opp/01a9caf034ad4ea68603448fd619b012/view"
+          "department": "VETERANS AFFAIRS, DEPARTMENT OF",
+          "posted_date": "2026-04-29",
+          "ui_link": "https://sam.gov/workspace/contract/opp/013c157ac32d4647942a48405d275ec0/view"
         }
       ]
     },
@@ -131,19 +131,19 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 570
+      "count": 577
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 187
+      "count": 192
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 63
+      "count": 64
     },
     {
       "name": "INTERIOR, DEPARTMENT OF THE",
-      "count": 38
+      "count": 39
     },
     {
       "name": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
@@ -151,7 +151,7 @@
     },
     {
       "name": "COMMERCE, DEPARTMENT OF",
-      "count": 29
+      "count": 30
     },
     {
       "name": "HOMELAND SECURITY, DEPARTMENT OF",
@@ -173,19 +173,19 @@
   "top_notice_types": [
     {
       "name": "Sources Sought",
-      "count": 315
+      "count": 322
     },
     {
       "name": "Solicitation",
-      "count": 250
+      "count": 254
     },
     {
       "name": "Special Notice",
-      "count": 211
+      "count": 215
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 149
+      "count": 151
     },
     {
       "name": "Presolicitation",
@@ -199,41 +199,41 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 570,
+      "total": 577,
       "pcts": {
         "shall_count": 56.3,
-        "has_user_vocab": 25.4,
+        "has_user_vocab": 25.5,
         "has_agile_vocab": 16.1,
         "mentions_rtm": 1.4
       }
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 187,
+      "total": 192,
       "pcts": {
-        "shall_count": 80.2,
-        "has_user_vocab": 48.7,
-        "has_agile_vocab": 16.6,
-        "mentions_rtm": 3.7
+        "shall_count": 80.7,
+        "has_user_vocab": 50.0,
+        "has_agile_vocab": 18.8,
+        "mentions_rtm": 3.6
       }
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 63,
+      "total": 64,
       "pcts": {
-        "shall_count": 57.1,
-        "has_user_vocab": 44.4,
-        "has_agile_vocab": 20.6,
+        "shall_count": 56.2,
+        "has_user_vocab": 43.8,
+        "has_agile_vocab": 20.3,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "INTERIOR, DEPARTMENT OF THE",
-      "total": 38,
+      "total": 39,
       "pcts": {
-        "shall_count": 71.1,
-        "has_user_vocab": 47.4,
-        "has_agile_vocab": 7.9,
+        "shall_count": 69.2,
+        "has_user_vocab": 46.2,
+        "has_agile_vocab": 7.7,
         "mentions_rtm": 0.0
       }
     },
@@ -249,12 +249,12 @@
     },
     {
       "dept": "COMMERCE, DEPARTMENT OF",
-      "total": 29,
+      "total": 30,
       "pcts": {
-        "shall_count": 79.3,
-        "has_user_vocab": 41.4,
-        "has_agile_vocab": 13.8,
-        "mentions_rtm": 3.4
+        "shall_count": 80.0,
+        "has_user_vocab": 40.0,
+        "has_agile_vocab": 13.3,
+        "mentions_rtm": 3.3
       }
     },
     {
@@ -329,11 +329,11 @@
     },
     {
       "dept": "TREASURY, DEPARTMENT OF THE",
-      "total": 8,
+      "total": 9,
       "pcts": {
         "shall_count": 100.0,
-        "has_user_vocab": 100.0,
-        "has_agile_vocab": 12.5,
+        "has_user_vocab": 88.9,
+        "has_agile_vocab": 22.2,
         "mentions_rtm": 0.0
       }
     },
@@ -541,11 +541,11 @@
     },
     {
       "month": "2026-04",
-      "total": 838,
+      "total": 855,
       "pcts": {
-        "shall_count": 64.4,
-        "has_user_vocab": 36.0,
-        "has_agile_vocab": 14.1,
+        "shall_count": 64.6,
+        "has_user_vocab": 36.3,
+        "has_agile_vocab": 14.6,
         "mentions_rtm": 2.1
       }
     }
