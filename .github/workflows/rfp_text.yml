@@ -124,18 +124,7 @@ jobs:
             echo "No dashboard changes to commit."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            git commit -m "Rebuild RFP dashboard JSONs [skip ci]"
+            git commit -m "Rebuild RFP dashboard JSONs"
             git push
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Deploy to Vercel
-        if: steps.commit.outputs.changed == 'true'
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: team_u9bFpS6pfSEkxQUvY1hp0DaX
-          VERCEL_PROJECT_ID: prj_1Tx1wBFZ5lBy7Susvs1BD0EgA2v3
-        run: |
-          npm i -g vercel
-          DEPLOY_URL=$(vercel deploy --prod --yes --token "$VERCEL_TOKEN")
-          vercel alias set "$DEPLOY_URL" sam-it-notices.vercel.app --token "$VERCEL_TOKEN"
