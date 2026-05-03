@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-05-02T01:18:09.032547+00:00",
+  "created_at": "2026-05-03T01:26:23.312920+00:00",
   "rfp_bundles": {
     "count": 1070,
     "notice_ids": [
@@ -243,7 +243,6 @@
       "3abdefec20e74f6789978c6906e5bdf6",
       "3ad0f39843d24e938f3a115112c69e8e",
       "3b5f6dd94f45409b8b7995c83e4e7f94",
-      "3bbcf16225fb42489ca6f60c4dfe5c57",
       "3bdf0817358543d3aec5cade9e08c137",
       "3be917d307d449baa911436476c7e704",
       "3ccea98a032d47b2a7fef72614fe80b3",
@@ -956,6 +955,7 @@
       "e32e156147c043b29aed50727b8aa935",
       "e3508fba90f84115bc17ea6c8669b1cc",
       "e3d068b7c13149ab9b0514cc80b6e637",
+      "e3eece8203e5420b9d0254387678ba84",
       "e3f63b42678e4195b206d55dfaa2c96b",
       "e4029833dda14220be6aa980bdc94b93",
       "e44ca3bd6f744be78f4beb376d8a5cb1",
@@ -1075,6 +1075,7 @@
       "fffd3143ad304898898c3bd6711405e3"
     ],
     "notice_id_to_sol": {
+      "e3eece8203e5420b9d0254387678ba84": "W50S8T-26-Q-AudioVisual",
       "7c1b82872e064fc3a9de84317300b2d5": "PZZG0416",
       "3abdefec20e74f6789978c6906e5bdf6": "140D0426Q0318",
       "8213a713cb1e4c43973f02e8a80922fc": "3003718",
@@ -1173,7 +1174,6 @@
       "da6900c85dee4a73903da407c390ec1f": "FA865226SC005",
       "ad4c6f954f0b45e0b7ff57a8f3b853e9": "040ADV-26-R-0022-C0002",
       "070fd403ea584ec499d1e31781cda299": "36C10B26Q0355",
-      "3bbcf16225fb42489ca6f60c4dfe5c57": "W50S8T-26-Q-AudioVisual",
       "4451cca62d8f4730972bc70f05d2d298": "N6264926QH013",
       "013c157ac32d4647942a48405d275ec0": "36C10B25Q0471",
       "6ecf2db03c6047e197db1d5a93051ea5": "VA-26-00057056",
