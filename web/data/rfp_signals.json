@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-05-05T01:14Z",
-  "total_bundles": 1228,
-  "with_attachments": 943,
+  "generated_at": "2026-05-06T01:14Z",
+  "total_bundles": 1251,
+  "with_attachments": 962,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-05-04"
+    "to": "2026-05-05"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 792,
-      "percent": 64.5,
+      "count": 809,
+      "percent": 64.7,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,8 +41,8 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 449,
-      "percent": 36.6,
+      "count": 457,
+      "percent": 36.5,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 199,
-      "percent": 16.2,
+      "count": 205,
+      "percent": 16.4,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -101,8 +101,8 @@
       "key": "mentions_rtm",
       "label": "Mentions an RTM",
       "description": "requirements traceability matrix",
-      "count": 21,
-      "percent": 1.7,
+      "count": 23,
+      "percent": 1.8,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -131,15 +131,15 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 636
+      "count": 646
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 207
+      "count": 211
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 73
+      "count": 77
     },
     {
       "name": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
@@ -147,11 +147,11 @@
     },
     {
       "name": "INTERIOR, DEPARTMENT OF THE",
-      "count": 44
+      "count": 45
     },
     {
       "name": "COMMERCE, DEPARTMENT OF",
-      "count": 35
+      "count": 37
     },
     {
       "name": "HOMELAND SECURITY, DEPARTMENT OF",
@@ -173,23 +173,23 @@
   "top_notice_types": [
     {
       "name": "Sources Sought",
-      "count": 355
+      "count": 362
     },
     {
       "name": "Solicitation",
-      "count": 284
+      "count": 288
     },
     {
       "name": "Special Notice",
-      "count": 235
+      "count": 241
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 169
+      "count": 173
     },
     {
       "name": "Presolicitation",
-      "count": 147
+      "count": 149
     },
     {
       "name": "Justification",
@@ -199,31 +199,31 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 636,
+      "total": 646,
       "pcts": {
-        "shall_count": 58.2,
+        "shall_count": 58.4,
         "has_user_vocab": 27.7,
         "has_agile_vocab": 16.7,
-        "mentions_rtm": 1.3
+        "mentions_rtm": 1.2
       }
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 207,
+      "total": 211,
       "pcts": {
-        "shall_count": 80.7,
-        "has_user_vocab": 51.2,
-        "has_agile_vocab": 18.8,
-        "mentions_rtm": 3.4
+        "shall_count": 80.6,
+        "has_user_vocab": 51.7,
+        "has_agile_vocab": 19.4,
+        "mentions_rtm": 4.3
       }
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 73,
+      "total": 77,
       "pcts": {
-        "shall_count": 60.3,
-        "has_user_vocab": 42.5,
-        "has_agile_vocab": 19.2,
+        "shall_count": 62.3,
+        "has_user_vocab": 41.6,
+        "has_agile_vocab": 19.5,
         "mentions_rtm": 0.0
       }
     },
@@ -239,22 +239,22 @@
     },
     {
       "dept": "INTERIOR, DEPARTMENT OF THE",
-      "total": 44,
+      "total": 45,
       "pcts": {
-        "shall_count": 70.5,
-        "has_user_vocab": 47.7,
-        "has_agile_vocab": 6.8,
+        "shall_count": 71.1,
+        "has_user_vocab": 46.7,
+        "has_agile_vocab": 6.7,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "COMMERCE, DEPARTMENT OF",
-      "total": 35,
+      "total": 37,
       "pcts": {
-        "shall_count": 74.3,
-        "has_user_vocab": 37.1,
-        "has_agile_vocab": 14.3,
-        "mentions_rtm": 2.9
+        "shall_count": 73.0,
+        "has_user_vocab": 35.1,
+        "has_agile_vocab": 16.2,
+        "mentions_rtm": 2.7
       }
     },
     {
@@ -298,22 +298,22 @@
       }
     },
     {
+      "dept": "FEDERAL DEPOSIT INSURANCE CORPORATION",
+      "total": 12,
+      "pcts": {
+        "shall_count": 100.0,
+        "has_user_vocab": 100.0,
+        "has_agile_vocab": 0.0,
+        "mentions_rtm": 0.0
+      }
+    },
+    {
       "dept": "STATE, DEPARTMENT OF",
       "total": 12,
       "pcts": {
         "shall_count": 66.7,
         "has_user_vocab": 41.7,
         "has_agile_vocab": 33.3,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "dept": "FEDERAL DEPOSIT INSURANCE CORPORATION",
-      "total": 11,
-      "pcts": {
-        "shall_count": 100.0,
-        "has_user_vocab": 100.0,
-        "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
@@ -349,7 +349,7 @@
     },
     {
       "dept": "ENVIRONMENTAL PROTECTION AGENCY",
-      "total": 7,
+      "total": 8,
       "pcts": {
         "shall_count": 0.0,
         "has_user_vocab": 0.0,
@@ -571,12 +571,12 @@
     },
     {
       "month": "2026-05",
-      "total": 38,
+      "total": 61,
       "pcts": {
-        "shall_count": 60.5,
-        "has_user_vocab": 36.8,
-        "has_agile_vocab": 13.2,
-        "mentions_rtm": 0.0
+        "shall_count": 65.6,
+        "has_user_vocab": 36.1,
+        "has_agile_vocab": 18.0,
+        "mentions_rtm": 3.3
       }
     }
   ]
