@@ -724,7 +724,10 @@ def main() -> None:
     if sam_error:
         raise SystemExit(f"FAIL: SAM error during run — {sam_error}")
     if kept_new == 0:
-        raise SystemExit("FAIL: 0 new bundles written this run.")
+        # Zero new bundles is common on weekend / Monday-morning runs (SAM
+        # posts little on Sat/Sun, and the daily window is small). Real
+        # regressions are caught by the baseline-floor data tests downstream.
+        print("Note: 0 new bundles this run.")
 
 
 if __name__ == "__main__":
