@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-05-10T01:21Z",
-  "total_bundles": 1308,
-  "with_attachments": 1010,
+  "generated_at": "2026-05-11T01:21Z",
+  "total_bundles": 1309,
+  "with_attachments": 1011,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-05-08"
+    "to": "2026-05-10"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 847,
+      "count": 848,
       "percent": 64.8,
       "examples": [
         {
@@ -41,7 +41,7 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 482,
+      "count": 483,
       "percent": 36.9,
       "examples": [
         {
@@ -71,7 +71,7 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 213,
+      "count": 214,
       "percent": 16.3,
       "examples": [
         {
@@ -185,7 +185,7 @@
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 190
+      "count": 191
     },
     {
       "name": "Presolicitation",
@@ -299,11 +299,11 @@
     },
     {
       "dept": "STATE, DEPARTMENT OF",
-      "total": 13,
+      "total": 14,
       "pcts": {
-        "shall_count": 69.2,
-        "has_user_vocab": 46.2,
-        "has_agile_vocab": 38.5,
+        "shall_count": 71.4,
+        "has_user_vocab": 50.0,
+        "has_agile_vocab": 42.9,
         "mentions_rtm": 0.0
       }
     },
@@ -571,11 +571,11 @@
     },
     {
       "month": "2026-05",
-      "total": 118,
+      "total": 119,
       "pcts": {
-        "shall_count": 66.1,
-        "has_user_vocab": 39.8,
-        "has_agile_vocab": 16.1,
+        "shall_count": 66.4,
+        "has_user_vocab": 40.3,
+        "has_agile_vocab": 16.8,
         "mentions_rtm": 3.4
       }
     }
