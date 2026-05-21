@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-05-20T01:44Z",
-  "total_bundles": 1460,
-  "with_attachments": 1132,
+  "generated_at": "2026-05-21T01:55Z",
+  "total_bundles": 1463,
+  "with_attachments": 1135,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-05-19"
+    "to": "2026-05-20"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 948,
-      "percent": 64.9,
+      "count": 951,
+      "percent": 65.0,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,8 +41,8 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 543,
-      "percent": 37.2,
+      "count": 545,
+      "percent": 37.3,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 246,
-      "percent": 16.8,
+      "count": 247,
+      "percent": 16.9,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -131,7 +131,7 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 729
+      "count": 730
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
@@ -185,11 +185,11 @@
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 230
+      "count": 232
     },
     {
       "name": "Presolicitation",
-      "count": 170
+      "count": 171
     },
     {
       "name": "Justification",
@@ -199,7 +199,7 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 729,
+      "total": 730,
       "pcts": {
         "shall_count": 58.6,
         "has_user_vocab": 27.8,
@@ -309,11 +309,11 @@
     },
     {
       "dept": "TREASURY, DEPARTMENT OF THE",
-      "total": 15,
+      "total": 16,
       "pcts": {
-        "shall_count": 93.3,
-        "has_user_vocab": 86.7,
-        "has_agile_vocab": 46.7,
+        "shall_count": 93.8,
+        "has_user_vocab": 87.5,
+        "has_agile_vocab": 50.0,
         "mentions_rtm": 0.0
       }
     },
@@ -581,11 +581,11 @@
     },
     {
       "month": "2026-05",
-      "total": 270,
+      "total": 273,
       "pcts": {
-        "shall_count": 66.3,
-        "has_user_vocab": 40.0,
-        "has_agile_vocab": 19.3,
+        "shall_count": 66.7,
+        "has_user_vocab": 40.3,
+        "has_agile_vocab": 19.4,
         "mentions_rtm": 3.3
       }
     }
