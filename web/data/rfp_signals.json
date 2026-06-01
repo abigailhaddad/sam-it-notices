@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-31T01:34Z",
-  "total_bundles": 1629,
+  "generated_at": "2026-06-01T01:38Z",
+  "total_bundles": 1630,
   "with_attachments": 1274,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-05-29"
+    "to": "2026-05-31"
   },
   "labels": [
     {
@@ -139,7 +139,7 @@
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 95
+      "count": 96
     },
     {
       "name": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
@@ -189,7 +189,7 @@
     },
     {
       "name": "Presolicitation",
-      "count": 186
+      "count": 187
     },
     {
       "name": "Justification",
@@ -219,11 +219,11 @@
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 95,
+      "total": 96,
       "pcts": {
-        "shall_count": 66.3,
-        "has_user_vocab": 42.1,
-        "has_agile_vocab": 16.8,
+        "shall_count": 65.6,
+        "has_user_vocab": 41.7,
+        "has_agile_vocab": 16.7,
         "mentions_rtm": 0.0
       }
     },
@@ -591,11 +591,11 @@
     },
     {
       "month": "2026-05",
-      "total": 439,
+      "total": 440,
       "pcts": {
-        "shall_count": 68.3,
-        "has_user_vocab": 39.4,
-        "has_agile_vocab": 21.9,
+        "shall_count": 68.2,
+        "has_user_vocab": 39.3,
+        "has_agile_vocab": 21.8,
         "mentions_rtm": 3.9
       }
     }
