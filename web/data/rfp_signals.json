@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-06-13T02:10Z",
-  "total_bundles": 1881,
-  "with_attachments": 1477,
+  "generated_at": "2026-06-14T02:05Z",
+  "total_bundles": 1882,
+  "with_attachments": 1478,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-06-12"
+    "to": "2026-06-13"
   },
   "labels": [
     {
@@ -131,7 +131,7 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 878
+      "count": 879
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
@@ -181,7 +181,7 @@
     },
     {
       "name": "Special Notice",
-      "count": 376
+      "count": 377
     },
     {
       "name": "Combined Synopsis/Solicitation",
@@ -199,7 +199,7 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 878,
+      "total": 879,
       "pcts": {
         "shall_count": 57.7,
         "has_user_vocab": 26.3,
@@ -651,11 +651,11 @@
     },
     {
       "month": "2026-06",
-      "total": 251,
+      "total": 252,
       "pcts": {
-        "shall_count": 46.2,
-        "has_user_vocab": 23.9,
-        "has_agile_vocab": 11.6,
+        "shall_count": 46.0,
+        "has_user_vocab": 23.8,
+        "has_agile_vocab": 11.5,
         "mentions_rtm": 0.4
       }
     }
