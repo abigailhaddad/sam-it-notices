@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-06-15T02:00Z",
-  "total_bundles": 1882,
-  "with_attachments": 1478,
+  "generated_at": "2026-06-16T02:01Z",
+  "total_bundles": 1905,
+  "with_attachments": 1499,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-06-13"
+    "to": "2026-06-15"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 1185,
+      "count": 1200,
       "percent": 63.0,
       "examples": [
         {
@@ -41,7 +41,7 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 668,
+      "count": 676,
       "percent": 35.5,
       "examples": [
         {
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 319,
-      "percent": 17.0,
+      "count": 322,
+      "percent": 16.9,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -101,7 +101,7 @@
       "key": "mentions_rtm",
       "label": "Mentions an RTM",
       "description": "requirements traceability matrix",
-      "count": 39,
+      "count": 40,
       "percent": 2.1,
       "examples": [
         {
@@ -112,18 +112,18 @@
           "ui_link": "https://sam.gov/workspace/contract/opp/000452db627e430b924fe16572912f7f/view"
         },
         {
+          "title": "DA01--Health Services DevSecOps, NEW CONTRACT (VA-26-00011357)",
+          "type": "Sources Sought",
+          "department": "VETERANS AFFAIRS, DEPARTMENT OF",
+          "posted_date": "2026-06-15",
+          "ui_link": "https://sam.gov/workspace/contract/opp/0b7d9b46ef8d4aee982b609e77993893/view"
+        },
+        {
           "title": "DC01--Infrastructure Operations Franchise Fund Support Services",
           "type": "Sources Sought",
           "department": "VETERANS AFFAIRS, DEPARTMENT OF",
           "posted_date": "2026-05-28",
           "ui_link": "https://sam.gov/workspace/contract/opp/0d3a6bc23eb14967b70fb405f35bf182/view"
-        },
-        {
-          "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
-          "type": "Presolicitation",
-          "department": "DEPT OF DEFENSE",
-          "posted_date": "2026-04-24",
-          "ui_link": "https://sam.gov/workspace/contract/opp/107fbc1616134a41b432446eaa5078a9/view"
         }
       ]
     }
@@ -131,19 +131,19 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 879
+      "count": 888
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 339
+      "count": 345
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 124
+      "count": 127
     },
     {
       "name": "COMMERCE, DEPARTMENT OF",
-      "count": 70
+      "count": 72
     },
     {
       "name": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
@@ -155,7 +155,7 @@
     },
     {
       "name": "HOMELAND SECURITY, DEPARTMENT OF",
-      "count": 55
+      "count": 56
     },
     {
       "name": "TRANSPORTATION, DEPARTMENT OF",
@@ -166,30 +166,30 @@
       "count": 29
     },
     {
-      "name": "ENERGY, DEPARTMENT OF",
+      "name": "STATE, DEPARTMENT OF",
       "count": 28
     }
   ],
   "top_notice_types": [
     {
       "name": "Sources Sought",
-      "count": 559
-    },
-    {
-      "name": "Solicitation",
-      "count": 378
+      "count": 567
     },
     {
       "name": "Special Notice",
-      "count": 377
+      "count": 383
+    },
+    {
+      "name": "Solicitation",
+      "count": 380
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 319
+      "count": 324
     },
     {
       "name": "Presolicitation",
-      "count": 211
+      "count": 213
     },
     {
       "name": "Justification",
@@ -199,41 +199,41 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 879,
+      "total": 888,
       "pcts": {
-        "shall_count": 57.7,
-        "has_user_vocab": 26.3,
-        "has_agile_vocab": 16.2,
+        "shall_count": 57.8,
+        "has_user_vocab": 26.4,
+        "has_agile_vocab": 16.1,
         "mentions_rtm": 1.4
       }
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 339,
+      "total": 345,
       "pcts": {
-        "shall_count": 79.6,
-        "has_user_vocab": 53.1,
-        "has_agile_vocab": 21.5,
-        "mentions_rtm": 4.4
+        "shall_count": 79.7,
+        "has_user_vocab": 52.8,
+        "has_agile_vocab": 21.4,
+        "mentions_rtm": 4.6
       }
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 124,
+      "total": 127,
       "pcts": {
-        "shall_count": 62.9,
-        "has_user_vocab": 37.9,
-        "has_agile_vocab": 14.5,
+        "shall_count": 62.2,
+        "has_user_vocab": 37.8,
+        "has_agile_vocab": 14.2,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "COMMERCE, DEPARTMENT OF",
-      "total": 70,
+      "total": 72,
       "pcts": {
-        "shall_count": 71.4,
-        "has_user_vocab": 37.1,
-        "has_agile_vocab": 25.7,
+        "shall_count": 70.8,
+        "has_user_vocab": 37.5,
+        "has_agile_vocab": 26.4,
         "mentions_rtm": 1.4
       }
     },
@@ -259,12 +259,12 @@
     },
     {
       "dept": "HOMELAND SECURITY, DEPARTMENT OF",
-      "total": 55,
+      "total": 56,
       "pcts": {
-        "shall_count": 58.2,
-        "has_user_vocab": 34.5,
-        "has_agile_vocab": 27.3,
-        "mentions_rtm": 16.4
+        "shall_count": 58.9,
+        "has_user_vocab": 33.9,
+        "has_agile_vocab": 26.8,
+        "mentions_rtm": 16.1
       }
     },
     {
@@ -288,22 +288,22 @@
       }
     },
     {
+      "dept": "STATE, DEPARTMENT OF",
+      "total": 28,
+      "pcts": {
+        "shall_count": 67.9,
+        "has_user_vocab": 64.3,
+        "has_agile_vocab": 28.6,
+        "mentions_rtm": 0.0
+      }
+    },
+    {
       "dept": "ENERGY, DEPARTMENT OF",
       "total": 28,
       "pcts": {
         "shall_count": 17.9,
         "has_user_vocab": 7.1,
         "has_agile_vocab": 3.6,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "dept": "STATE, DEPARTMENT OF",
-      "total": 27,
-      "pcts": {
-        "shall_count": 66.7,
-        "has_user_vocab": 63.0,
-        "has_agile_vocab": 29.6,
         "mentions_rtm": 0.0
       }
     },
@@ -329,12 +329,12 @@
     },
     {
       "dept": "GENERAL SERVICES ADMINISTRATION",
-      "total": 14,
+      "total": 15,
       "pcts": {
-        "shall_count": 78.6,
-        "has_user_vocab": 64.3,
-        "has_agile_vocab": 42.9,
-        "mentions_rtm": 7.1
+        "shall_count": 73.3,
+        "has_user_vocab": 60.0,
+        "has_agile_vocab": 40.0,
+        "mentions_rtm": 6.7
       }
     },
     {
@@ -651,12 +651,12 @@
     },
     {
       "month": "2026-06",
-      "total": 252,
+      "total": 275,
       "pcts": {
-        "shall_count": 46.0,
-        "has_user_vocab": 23.8,
-        "has_agile_vocab": 11.5,
-        "mentions_rtm": 0.4
+        "shall_count": 47.6,
+        "has_user_vocab": 24.7,
+        "has_agile_vocab": 11.6,
+        "mentions_rtm": 0.7
       }
     }
   ]
