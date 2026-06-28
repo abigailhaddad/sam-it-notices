@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-27T01:42Z",
-  "total_bundles": 2073,
-  "with_attachments": 1642,
+  "generated_at": "2026-06-28T01:46Z",
+  "total_bundles": 2075,
+  "with_attachments": 1644,
   "date_range": {
     "from": "2023-02-16",
     "to": "2026-06-26"
@@ -11,8 +11,8 @@
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 1323,
-      "percent": 63.8,
+      "count": 1325,
+      "percent": 63.9,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,7 +41,7 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 746,
+      "count": 748,
       "percent": 36.0,
       "examples": [
         {
@@ -71,7 +71,7 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 352,
+      "count": 353,
       "percent": 17.0,
       "examples": [
         {
@@ -131,7 +131,7 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 960
+      "count": 961
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
@@ -173,7 +173,7 @@
   "top_notice_types": [
     {
       "name": "Sources Sought",
-      "count": 616
+      "count": 617
     },
     {
       "name": "Special Notice",
@@ -181,7 +181,7 @@
     },
     {
       "name": "Solicitation",
-      "count": 415
+      "count": 416
     },
     {
       "name": "Combined Synopsis/Solicitation",
@@ -199,10 +199,10 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 960,
+      "total": 961,
       "pcts": {
-        "shall_count": 58.2,
-        "has_user_vocab": 26.1,
+        "shall_count": 58.3,
+        "has_user_vocab": 26.2,
         "has_agile_vocab": 15.9,
         "mentions_rtm": 1.2
       }
@@ -379,11 +379,11 @@
     },
     {
       "dept": "SELECTIVE SERVICE SYSTEM",
-      "total": 7,
+      "total": 8,
       "pcts": {
-        "shall_count": 57.1,
-        "has_user_vocab": 42.9,
-        "has_agile_vocab": 42.9,
+        "shall_count": 62.5,
+        "has_user_vocab": 50.0,
+        "has_agile_vocab": 50.0,
         "mentions_rtm": 0.0
       }
     },
@@ -651,11 +651,11 @@
     },
     {
       "month": "2026-06",
-      "total": 443,
+      "total": 445,
       "pcts": {
-        "shall_count": 57.3,
-        "has_user_vocab": 31.2,
-        "has_agile_vocab": 14.0,
+        "shall_count": 57.5,
+        "has_user_vocab": 31.5,
+        "has_agile_vocab": 14.2,
         "mentions_rtm": 1.1
       }
     }
