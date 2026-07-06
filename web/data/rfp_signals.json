@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-05T01:36Z",
-  "total_bundles": 2159,
-  "with_attachments": 1716,
+  "generated_at": "2026-07-06T01:34Z",
+  "total_bundles": 2160,
+  "with_attachments": 1717,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-07-02"
+    "to": "2026-07-05"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 1386,
+      "count": 1387,
       "percent": 64.2,
       "examples": [
         {
@@ -135,7 +135,7 @@
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 395
+      "count": 396
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
@@ -181,7 +181,7 @@
     },
     {
       "name": "Solicitation",
-      "count": 428
+      "count": 429
     },
     {
       "name": "Combined Synopsis/Solicitation",
@@ -209,11 +209,11 @@
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 395,
+      "total": 396,
       "pcts": {
-        "shall_count": 81.0,
-        "has_user_vocab": 55.7,
-        "has_agile_vocab": 22.8,
+        "shall_count": 81.1,
+        "has_user_vocab": 55.6,
+        "has_agile_vocab": 22.7,
         "mentions_rtm": 4.3
       }
     },
@@ -661,12 +661,12 @@
     },
     {
       "month": "2026-07",
-      "total": 44,
+      "total": 45,
       "pcts": {
-        "shall_count": 77.3,
-        "has_user_vocab": 50.0,
-        "has_agile_vocab": 25.0,
-        "mentions_rtm": 2.3
+        "shall_count": 77.8,
+        "has_user_vocab": 48.9,
+        "has_agile_vocab": 24.4,
+        "mentions_rtm": 2.2
       }
     }
   ]
