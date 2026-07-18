@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-17T01:32Z",
-  "total_bundles": 2371,
-  "with_attachments": 1888,
+  "generated_at": "2026-07-18T01:29Z",
+  "total_bundles": 2393,
+  "with_attachments": 1904,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-07-16"
+    "to": "2026-07-17"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 1534,
+      "count": 1549,
       "percent": 64.7,
       "examples": [
         {
@@ -41,7 +41,7 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 878,
+      "count": 885,
       "percent": 37.0,
       "examples": [
         {
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 405,
-      "percent": 17.1,
+      "count": 407,
+      "percent": 17.0,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -131,19 +131,19 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 1064
+      "count": 1072
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 454
+      "count": 460
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 170
+      "count": 174
     },
     {
       "name": "INTERIOR, DEPARTMENT OF THE",
-      "count": 93
+      "count": 96
     },
     {
       "name": "COMMERCE, DEPARTMENT OF",
@@ -173,23 +173,23 @@
   "top_notice_types": [
     {
       "name": "Sources Sought",
-      "count": 708
+      "count": 713
     },
     {
       "name": "Special Notice",
-      "count": 481
+      "count": 486
     },
     {
       "name": "Solicitation",
-      "count": 471
+      "count": 476
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 424
+      "count": 429
     },
     {
       "name": "Presolicitation",
-      "count": 249
+      "count": 251
     },
     {
       "name": "Justification",
@@ -199,41 +199,41 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 1064,
+      "total": 1072,
       "pcts": {
         "shall_count": 58.7,
-        "has_user_vocab": 26.5,
+        "has_user_vocab": 26.4,
         "has_agile_vocab": 15.6,
         "mentions_rtm": 1.4
       }
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 454,
+      "total": 460,
       "pcts": {
-        "shall_count": 81.5,
-        "has_user_vocab": 56.8,
-        "has_agile_vocab": 23.1,
-        "mentions_rtm": 4.2
+        "shall_count": 81.7,
+        "has_user_vocab": 57.0,
+        "has_agile_vocab": 23.0,
+        "mentions_rtm": 4.1
       }
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 170,
+      "total": 174,
       "pcts": {
-        "shall_count": 64.7,
-        "has_user_vocab": 38.8,
-        "has_agile_vocab": 12.9,
-        "mentions_rtm": 1.2
+        "shall_count": 64.9,
+        "has_user_vocab": 37.9,
+        "has_agile_vocab": 12.6,
+        "mentions_rtm": 1.1
       }
     },
     {
       "dept": "INTERIOR, DEPARTMENT OF THE",
-      "total": 93,
+      "total": 96,
       "pcts": {
         "shall_count": 67.7,
-        "has_user_vocab": 39.8,
-        "has_agile_vocab": 8.6,
+        "has_user_vocab": 40.6,
+        "has_agile_vocab": 8.3,
         "mentions_rtm": 0.0
       }
     },
@@ -368,22 +368,22 @@
       }
     },
     {
+      "dept": "ENVIRONMENTAL PROTECTION AGENCY",
+      "total": 11,
+      "pcts": {
+        "shall_count": 0.0,
+        "has_user_vocab": 0.0,
+        "has_agile_vocab": 0.0,
+        "mentions_rtm": 0.0
+      }
+    },
+    {
       "dept": "SELECTIVE SERVICE SYSTEM",
       "total": 11,
       "pcts": {
         "shall_count": 72.7,
         "has_user_vocab": 63.6,
         "has_agile_vocab": 54.5,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "dept": "ENVIRONMENTAL PROTECTION AGENCY",
-      "total": 10,
-      "pcts": {
-        "shall_count": 0.0,
-        "has_user_vocab": 0.0,
-        "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
@@ -671,12 +671,12 @@
     },
     {
       "month": "2026-07",
-      "total": 256,
+      "total": 278,
       "pcts": {
-        "shall_count": 71.1,
-        "has_user_vocab": 42.6,
-        "has_agile_vocab": 17.2,
-        "mentions_rtm": 2.7
+        "shall_count": 70.9,
+        "has_user_vocab": 41.7,
+        "has_agile_vocab": 16.5,
+        "mentions_rtm": 2.5
       }
     }
   ]
