@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-07-20T01:46Z",
-  "total_bundles": 2393,
-  "with_attachments": 1904,
+  "generated_at": "2026-07-21T01:36Z",
+  "total_bundles": 2425,
+  "with_attachments": 1932,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-07-17"
+    "to": "2026-07-20"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 1549,
-      "percent": 64.7,
+      "count": 1571,
+      "percent": 64.8,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,7 +41,7 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 885,
+      "count": 897,
       "percent": 37.0,
       "examples": [
         {
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 407,
-      "percent": 17.0,
+      "count": 414,
+      "percent": 17.1,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -101,7 +101,7 @@
       "key": "mentions_rtm",
       "label": "Mentions an RTM",
       "description": "requirements traceability matrix",
-      "count": 52,
+      "count": 53,
       "percent": 2.2,
       "examples": [
         {
@@ -131,27 +131,27 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 1072
+      "count": 1081
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 460
+      "count": 467
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 174
+      "count": 179
     },
     {
       "name": "INTERIOR, DEPARTMENT OF THE",
-      "count": 96
+      "count": 97
     },
     {
       "name": "COMMERCE, DEPARTMENT OF",
-      "count": 91
+      "count": 93
     },
     {
       "name": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
-      "count": 82
+      "count": 83
     },
     {
       "name": "HOMELAND SECURITY, DEPARTMENT OF",
@@ -163,33 +163,33 @@
     },
     {
       "name": "JUSTICE, DEPARTMENT OF",
-      "count": 34
+      "count": 35
     },
     {
       "name": "TRANSPORTATION, DEPARTMENT OF",
-      "count": 33
+      "count": 34
     }
   ],
   "top_notice_types": [
     {
       "name": "Sources Sought",
-      "count": 713
+      "count": 723
     },
     {
       "name": "Special Notice",
-      "count": 486
+      "count": 493
     },
     {
       "name": "Solicitation",
-      "count": 476
+      "count": 484
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 429
+      "count": 433
     },
     {
       "name": "Presolicitation",
-      "count": 251
+      "count": 254
     },
     {
       "name": "Justification",
@@ -199,60 +199,60 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 1072,
+      "total": 1081,
       "pcts": {
-        "shall_count": 58.7,
+        "shall_count": 58.8,
         "has_user_vocab": 26.4,
-        "has_agile_vocab": 15.6,
+        "has_agile_vocab": 15.8,
         "mentions_rtm": 1.4
       }
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 460,
+      "total": 467,
       "pcts": {
-        "shall_count": 81.7,
-        "has_user_vocab": 57.0,
-        "has_agile_vocab": 23.0,
-        "mentions_rtm": 4.1
+        "shall_count": 81.8,
+        "has_user_vocab": 57.2,
+        "has_agile_vocab": 23.1,
+        "mentions_rtm": 4.3
       }
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 174,
+      "total": 179,
       "pcts": {
-        "shall_count": 64.9,
-        "has_user_vocab": 37.9,
-        "has_agile_vocab": 12.6,
+        "shall_count": 64.2,
+        "has_user_vocab": 38.0,
+        "has_agile_vocab": 12.3,
         "mentions_rtm": 1.1
       }
     },
     {
       "dept": "INTERIOR, DEPARTMENT OF THE",
-      "total": 96,
+      "total": 97,
       "pcts": {
-        "shall_count": 67.7,
-        "has_user_vocab": 40.6,
-        "has_agile_vocab": 8.3,
+        "shall_count": 67.0,
+        "has_user_vocab": 40.2,
+        "has_agile_vocab": 8.2,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "COMMERCE, DEPARTMENT OF",
-      "total": 91,
+      "total": 93,
       "pcts": {
-        "shall_count": 68.1,
-        "has_user_vocab": 36.3,
-        "has_agile_vocab": 23.1,
+        "shall_count": 68.8,
+        "has_user_vocab": 35.5,
+        "has_agile_vocab": 22.6,
         "mentions_rtm": 1.1
       }
     },
     {
       "dept": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
-      "total": 82,
+      "total": 83,
       "pcts": {
-        "shall_count": 51.2,
-        "has_user_vocab": 15.9,
+        "shall_count": 50.6,
+        "has_user_vocab": 15.7,
         "has_agile_vocab": 2.4,
         "mentions_rtm": 0.0
       }
@@ -279,51 +279,51 @@
     },
     {
       "dept": "JUSTICE, DEPARTMENT OF",
-      "total": 34,
+      "total": 35,
       "pcts": {
-        "shall_count": 64.7,
-        "has_user_vocab": 26.5,
+        "shall_count": 65.7,
+        "has_user_vocab": 25.7,
         "has_agile_vocab": 2.9,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "TRANSPORTATION, DEPARTMENT OF",
-      "total": 33,
+      "total": 34,
       "pcts": {
-        "shall_count": 69.7,
-        "has_user_vocab": 57.6,
-        "has_agile_vocab": 30.3,
-        "mentions_rtm": 3.0
+        "shall_count": 70.6,
+        "has_user_vocab": 58.8,
+        "has_agile_vocab": 32.4,
+        "mentions_rtm": 2.9
       }
     },
     {
       "dept": "ENERGY, DEPARTMENT OF",
-      "total": 29,
+      "total": 30,
       "pcts": {
-        "shall_count": 17.2,
-        "has_user_vocab": 6.9,
-        "has_agile_vocab": 3.4,
+        "shall_count": 16.7,
+        "has_user_vocab": 6.7,
+        "has_agile_vocab": 3.3,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "FEDERAL DEPOSIT INSURANCE CORPORATION",
-      "total": 27,
+      "total": 29,
       "pcts": {
-        "shall_count": 92.6,
-        "has_user_vocab": 92.6,
-        "has_agile_vocab": 14.8,
+        "shall_count": 93.1,
+        "has_user_vocab": 93.1,
+        "has_agile_vocab": 13.8,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "TREASURY, DEPARTMENT OF THE",
-      "total": 22,
+      "total": 23,
       "pcts": {
-        "shall_count": 90.9,
-        "has_user_vocab": 63.6,
-        "has_agile_vocab": 36.4,
+        "shall_count": 87.0,
+        "has_user_vocab": 60.9,
+        "has_agile_vocab": 34.8,
         "mentions_rtm": 0.0
       }
     },
@@ -388,22 +388,22 @@
       }
     },
     {
+      "dept": "LIBRARY OF CONGRESS",
+      "total": 8,
+      "pcts": {
+        "shall_count": 100.0,
+        "has_user_vocab": 12.5,
+        "has_agile_vocab": 0.0,
+        "mentions_rtm": 0.0
+      }
+    },
+    {
       "dept": "HOUSING AND URBAN DEVELOPMENT, DEPARTMENT OF",
       "total": 7,
       "pcts": {
         "shall_count": 85.7,
         "has_user_vocab": 85.7,
         "has_agile_vocab": 57.1,
-        "mentions_rtm": 0.0
-      }
-    },
-    {
-      "dept": "LIBRARY OF CONGRESS",
-      "total": 7,
-      "pcts": {
-        "shall_count": 100.0,
-        "has_user_vocab": 14.3,
-        "has_agile_vocab": 0.0,
         "mentions_rtm": 0.0
       }
     },
@@ -671,12 +671,12 @@
     },
     {
       "month": "2026-07",
-      "total": 278,
+      "total": 310,
       "pcts": {
-        "shall_count": 70.9,
-        "has_user_vocab": 41.7,
-        "has_agile_vocab": 16.5,
-        "mentions_rtm": 2.5
+        "shall_count": 70.6,
+        "has_user_vocab": 41.3,
+        "has_agile_vocab": 17.1,
+        "mentions_rtm": 2.6
       }
     }
   ]
