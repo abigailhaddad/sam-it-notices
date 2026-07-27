@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-07-26T01:52Z",
-  "total_bundles": 2537,
-  "with_attachments": 2028,
+  "generated_at": "2026-07-27T01:50Z",
+  "total_bundles": 2540,
+  "with_attachments": 2031,
   "date_range": {
     "from": "2023-02-16",
-    "to": "2026-07-24"
+    "to": "2026-07-26"
   },
   "labels": [
     {
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 1650,
-      "percent": 65.0,
+      "count": 1653,
+      "percent": 65.1,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -41,8 +41,8 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 940,
-      "percent": 37.1,
+      "count": 941,
+      "percent": 37.0,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -71,7 +71,7 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 429,
+      "count": 430,
       "percent": 16.9,
       "examples": [
         {
@@ -135,7 +135,7 @@
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 487
+      "count": 490
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
@@ -177,7 +177,7 @@
     },
     {
       "name": "Special Notice",
-      "count": 523
+      "count": 525
     },
     {
       "name": "Solicitation",
@@ -185,7 +185,7 @@
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 459
+      "count": 460
     },
     {
       "name": "Presolicitation",
@@ -209,11 +209,11 @@
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 487,
+      "total": 490,
       "pcts": {
-        "shall_count": 81.7,
-        "has_user_vocab": 57.1,
-        "has_agile_vocab": 23.0,
+        "shall_count": 81.8,
+        "has_user_vocab": 56.9,
+        "has_agile_vocab": 23.1,
         "mentions_rtm": 4.3
       }
     },
@@ -671,11 +671,11 @@
     },
     {
       "month": "2026-07",
-      "total": 422,
+      "total": 425,
       "pcts": {
-        "shall_count": 70.6,
+        "shall_count": 70.8,
         "has_user_vocab": 40.5,
-        "has_agile_vocab": 16.1,
+        "has_agile_vocab": 16.2,
         "mentions_rtm": 3.1
       }
     }
