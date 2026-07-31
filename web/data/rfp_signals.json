@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-30T01:42Z",
-  "total_bundles": 2627,
-  "with_attachments": 2101,
+  "generated_at": "2026-07-31T02:02Z",
+  "total_bundles": 2648,
+  "with_attachments": 2119,
   "date_range": {
     "from": "2023-02-16",
     "to": "2026-07-30"
@@ -11,8 +11,8 @@
       "key": "shall_count",
       "label": "Contains 'shall' clauses",
       "description": "FAR-style requirement language ('the contractor shall...')",
-      "count": 1706,
-      "percent": 64.9,
+      "count": 1720,
+      "percent": 65.0,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -22,18 +22,18 @@
           "ui_link": "https://sam.gov/workspace/contract/opp/000452db627e430b924fe16572912f7f/view"
         },
         {
+          "title": "Small Business Set Aside for Ocean Simulation Facility Modernization per attachments- CMMC Level 1 Required",
+          "type": "Combined Synopsis/Solicitation",
+          "department": "DEPT OF DEFENSE",
+          "posted_date": "2026-07-30",
+          "ui_link": "https://sam.gov/workspace/contract/opp/002a70d9e9ed405183ea4909d60e85d7/view"
+        },
+        {
           "title": "C219--Reduce Inefficiencies in VA Design and Construction (RICVDC)    - Special Notice / Request for Information for Standards  Alert Memo",
           "type": "Special Notice",
           "department": "VETERANS AFFAIRS, DEPARTMENT OF",
           "posted_date": "2026-04-02",
           "ui_link": "https://sam.gov/workspace/contract/opp/003d0cae36ad4fffa408d2536ea50d07/view"
-        },
-        {
-          "title": "J049--INTENT TO SOLE SOURCE NETSMART Tech Methasoft Support",
-          "type": "Special Notice",
-          "department": "VETERANS AFFAIRS, DEPARTMENT OF",
-          "posted_date": "2026-06-11",
-          "ui_link": "https://sam.gov/workspace/contract/opp/0071360a098f45978e828a96462e0e10/view"
         }
       ]
     },
@@ -41,8 +41,8 @@
       "key": "has_user_vocab",
       "label": "Mentions users / stakeholders",
       "description": "end users, stakeholders, user research, UX",
-      "count": 968,
-      "percent": 36.8,
+      "count": 978,
+      "percent": 36.9,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -71,8 +71,8 @@
       "key": "has_agile_vocab",
       "label": "Uses agile vocabulary",
       "description": "sprints, scrum, kanban, backlog, user stories",
-      "count": 445,
-      "percent": 16.9,
+      "count": 451,
+      "percent": 17.0,
       "examples": [
         {
           "title": "Foundation Sustainment Support, Software and Integration (FS3i)",
@@ -101,7 +101,7 @@
       "key": "mentions_rtm",
       "label": "Mentions an RTM",
       "description": "requirements traceability matrix",
-      "count": 61,
+      "count": 62,
       "percent": 2.3,
       "examples": [
         {
@@ -131,27 +131,27 @@
   "top_departments": [
     {
       "name": "DEPT OF DEFENSE",
-      "count": 1152
+      "count": 1159
     },
     {
       "name": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "count": 506
+      "count": 514
     },
     {
       "name": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "count": 204
+      "count": 205
     },
     {
       "name": "INTERIOR, DEPARTMENT OF THE",
-      "count": 107
+      "count": 109
     },
     {
       "name": "COMMERCE, DEPARTMENT OF",
-      "count": 103
+      "count": 104
     },
     {
       "name": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
-      "count": 97
+      "count": 98
     },
     {
       "name": "HOMELAND SECURITY, DEPARTMENT OF",
@@ -173,23 +173,23 @@
   "top_notice_types": [
     {
       "name": "Sources Sought",
-      "count": 768
+      "count": 777
     },
     {
       "name": "Special Notice",
-      "count": 553
+      "count": 556
     },
     {
       "name": "Solicitation",
-      "count": 512
+      "count": 514
     },
     {
       "name": "Combined Synopsis/Solicitation",
-      "count": 489
+      "count": 494
     },
     {
       "name": "Presolicitation",
-      "count": 267
+      "count": 269
     },
     {
       "name": "Justification",
@@ -199,61 +199,61 @@
   "by_dept": [
     {
       "dept": "DEPT OF DEFENSE",
-      "total": 1152,
+      "total": 1159,
       "pcts": {
         "shall_count": 59.3,
-        "has_user_vocab": 26.8,
-        "has_agile_vocab": 15.8,
+        "has_user_vocab": 26.9,
+        "has_agile_vocab": 15.7,
         "mentions_rtm": 1.3
       }
     },
     {
       "dept": "VETERANS AFFAIRS, DEPARTMENT OF",
-      "total": 506,
+      "total": 514,
       "pcts": {
-        "shall_count": 81.4,
-        "has_user_vocab": 56.5,
-        "has_agile_vocab": 22.9,
-        "mentions_rtm": 4.5
+        "shall_count": 81.7,
+        "has_user_vocab": 56.8,
+        "has_agile_vocab": 23.5,
+        "mentions_rtm": 4.7
       }
     },
     {
       "dept": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-      "total": 204,
+      "total": 205,
       "pcts": {
-        "shall_count": 63.7,
-        "has_user_vocab": 37.3,
-        "has_agile_vocab": 12.3,
+        "shall_count": 63.4,
+        "has_user_vocab": 37.1,
+        "has_agile_vocab": 12.7,
         "mentions_rtm": 1.5
       }
     },
     {
       "dept": "INTERIOR, DEPARTMENT OF THE",
-      "total": 107,
+      "total": 109,
       "pcts": {
-        "shall_count": 68.2,
-        "has_user_vocab": 41.1,
-        "has_agile_vocab": 7.5,
+        "shall_count": 67.9,
+        "has_user_vocab": 41.3,
+        "has_agile_vocab": 7.3,
         "mentions_rtm": 0.0
       }
     },
     {
       "dept": "COMMERCE, DEPARTMENT OF",
-      "total": 103,
+      "total": 104,
       "pcts": {
-        "shall_count": 66.0,
-        "has_user_vocab": 34.0,
-        "has_agile_vocab": 23.3,
+        "shall_count": 66.3,
+        "has_user_vocab": 33.7,
+        "has_agile_vocab": 23.1,
         "mentions_rtm": 1.9
       }
     },
     {
       "dept": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
-      "total": 97,
+      "total": 98,
       "pcts": {
-        "shall_count": 49.5,
-        "has_user_vocab": 13.4,
-        "has_agile_vocab": 2.1,
+        "shall_count": 49.0,
+        "has_user_vocab": 13.3,
+        "has_agile_vocab": 2.0,
         "mentions_rtm": 0.0
       }
     },
@@ -339,7 +339,7 @@
     },
     {
       "dept": "SOCIAL SECURITY ADMINISTRATION",
-      "total": 15,
+      "total": 16,
       "pcts": {
         "shall_count": 0.0,
         "has_user_vocab": 0.0,
@@ -671,12 +671,12 @@
     },
     {
       "month": "2026-07",
-      "total": 512,
+      "total": 533,
       "pcts": {
-        "shall_count": 69.1,
-        "has_user_vocab": 38.9,
-        "has_agile_vocab": 16.4,
-        "mentions_rtm": 3.1
+        "shall_count": 69.0,
+        "has_user_vocab": 39.2,
+        "has_agile_vocab": 16.9,
+        "mentions_rtm": 3.2
       }
     }
   ]
