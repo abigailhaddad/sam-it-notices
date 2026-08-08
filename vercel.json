@@ -1,4 +1,28 @@
 {
   "framework": null,
-  "outputDirectory": "web"
+  "outputDirectory": "web",
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "procurement-methods.vercel.app"
+        }
+      ],
+      "destination": "https://procurement-methods.abigailhaddad.com/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "procurement-methods.vercel.app"
+        }
+      ],
+      "destination": "https://procurement-methods.abigailhaddad.com/:path*",
+      "permanent": false
+    }
+  ]
 }
