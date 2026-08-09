@@ -38,15 +38,17 @@ extract_personnel.py    GPT-based extraction of personnel roles / LCATs from
                         new bundles. Caches to R2 (it_rfps/personnel/).
 
 build_rfp_signals.py    Reads bundles + personnel cache from R2, writes
-                        web/data/rfp_signals.json + rfp_bundles.json. These
-                        are the only files the dashboard fetches.
+                        web/data/rfp_signals.json + web/data/rfp_bundles/
+                        (sharded — Cloudflare Pages rejects files over
+                        25 MiB). These are the only files the dashboard
+                        fetches.
 ```
 
 ```mermaid
 flowchart TD
     SAM["SAM.gov\nopportunities API"]:::src --> RTP["rfp_text_pipeline.py\nR2: it_rfps/bundles/\n(daily cron)"]:::step
     RTP --> EP["extract_personnel.py\nR2: it_rfps/personnel/\n(GPT role extraction)"]:::step
-    RTP --> BRS["build_rfp_signals.py\nrfp_bundles.json"]:::step
+    RTP --> BRS["build_rfp_signals.py\nrfp_bundles/ shards"]:::step
     EP --> BRS
     BRS --> DASH["Dashboard\nsam-it-notices.vercel.app"]:::out
 

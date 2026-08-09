@@ -79,10 +79,23 @@ Reads bundle + personnel JSON from R2, aggregates, deduplicates by
 solicitation number, and writes the only two files the dashboard reads:
 
 - `web/data/rfp_signals.json` — per-notice summary signals
-- `web/data/rfp_bundles.json` — full bundle payload (snippets, labels,
-  set-aside, NAICS, search_text, lcats, personnel, ui_link, …)
+- `web/data/rfp_bundles/` — full bundle payload (snippets, labels, set-aside,
+  NAICS, search_text, lcats, personnel, ui_link, …), **sharded**:
+  `manifest.json` lists `shard-NNN.json` files, each packed to a 4 MiB budget.
 
-Commit `web/data/` after running — these are what Vercel serves.
+Commit `web/data/` after running — these are what the host serves.
+
+### Why the bundles are sharded
+
+Cloudflare Pages hard-rejects any single file over 25 MiB (26,214,400 bytes).
+The old monolithic `web/data/rfp_bundles.json` reached 25,057,780 bytes —
+95.6% of the limit — and the daily pipeline only ever appends, so the deploy
+was weeks from failing outright. `rfp_bundle_shards.py` is the shared
+writer/reader; `tests/data/test_web_file_sizes.py` fails the build if any file
+under `web/` crosses 80% of the limit.
+
+Shards are packed to a **size budget**, not a fixed count, so the number of
+files grows with the corpus and no single file drifts toward the limit.
 
 ## Personnel extraction (`extract_personnel.py`)
 
@@ -95,9 +108,13 @@ to R2 at `it_rfps/personnel/{noticeId}.json` so it's idempotent.
 Static site deployable to Vercel (root → `web/`). `vercel.json` routes
 `/ → web/`. Uses Chart.js v4 (CDN) + DataTables for the notice browser.
 
-The two JSON files (`rfp_signals.json` + `rfp_bundles.json`) are the only
-data the page fetches — no contracts, eval-method, tradeoff, SAM-vendor or
-protest data is consumed by the UI.
+`rfp_signals.json` plus the `rfp_bundles/` shards are the only data the page
+fetches — no contracts, eval-method, tradeoff, SAM-vendor or protest data is
+consumed by the UI. `loadBundles()` reads `data/rfp_bundles/manifest.json`,
+fetches every shard in parallel, and concatenates them into one array. All
+shards load up front deliberately: full-text search runs client-side over
+`search_text` in the hidden `_text` column, so the corpus must be complete
+before the DataTable is built — lazy-loading it would break search.
 
 ### Filters
 
@@ -118,12 +135,14 @@ protest data is consumed by the UI.
 ```
 rfp_text_pipeline.py       — daily SAM.gov ingest → R2 bundles
 extract_personnel.py       — GPT personnel extraction → R2 personnel cache
-build_rfp_signals.py       — R2 → web/data/{rfp_signals,rfp_bundles}.json
+build_rfp_signals.py       — R2 → web/data/rfp_signals.json + rfp_bundles/ shards
+rfp_bundle_shards.py       — shard writer/reader shared by the build + tests
 r2_sync.py                 — R2 helper module used by rfp_text_pipeline.py
 web/index.html             — static dashboard (DataTables notice browser)
 web/shared/filters.js      — FilterManager class
 web/shared/shared.css      — design tokens + component styles
-web/data/*.json            — committed dashboard data (Vercel serves)
+web/data/rfp_signals.json  — committed dashboard data
+web/data/rfp_bundles/      — committed bundle shards + manifest.json
 .github/workflows/
   rfp_text.yml             — daily 00:05 UTC: pipeline → personnel → rebuild
                               JSONs → run data + frontend tests → commit + push
@@ -139,7 +158,9 @@ vercel.json                — routes / → web/
 `rfp_text.yml` runs both test suites *before* the commit-and-push step. If
 either suite fails, no commit lands and the previous build keeps serving.
 
-- `tests/data/` — schema/floor checks on `web/data/*.json`
+- `tests/data/` — schema/floor checks on `web/data/`, plus
+  `test_web_file_sizes.py`, which fails if any file under `web/` passes 80% of
+  the Cloudflare Pages 25 MiB per-file limit
 - `tests/frontend/` — Playwright + chromium against a local `http.server`,
   including a parametrized test that asserts every selectable filter option
   yields at least one row (regression cover for two recent filter bugs)

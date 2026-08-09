@@ -8,17 +8,13 @@ each multiselect field, apply it via the URL (?field=value), and assert the
 table draws at least one row.
 """
 
-import json
+import sys
 from pathlib import Path
 
 import pytest
 
-BUNDLES_PATH = Path(__file__).resolve().parents[2] / "web" / "data" / "rfp_bundles.json"
-
-
-def _load_bundles():
-    with open(BUNDLES_PATH) as f:
-        return json.load(f)
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from rfp_bundle_shards import load_bundles as _load_bundles  # noqa: E402
 
 
 def _get_sa(b):

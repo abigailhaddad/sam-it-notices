@@ -120,7 +120,10 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add web/data/rfp_signals.json web/data/rfp_bundles.json tests/data/baseline.json
+          # -A so that shard files removed by a rebuild (the bundle payload is
+          # split into a variable number of shard-*.json under
+          # web/data/rfp_bundles/) get staged as deletions too.
+          git add -A web/data tests/data/baseline.json
           if git diff --cached --quiet; then
             echo "No dashboard changes to commit."
             echo "changed=false" >> "$GITHUB_OUTPUT"

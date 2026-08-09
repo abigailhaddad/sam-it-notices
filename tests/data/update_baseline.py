@@ -1,5 +1,5 @@
 """
-update_baseline.py — Snapshot current rfp_bundles.json into tests/data/baseline.json.
+update_baseline.py — Snapshot the current rfp_bundles shards into tests/data/baseline.json.
 
 Run after a successful rebuild to raise the floor. The baseline is committed
 to git; tests fail if any previously-seen notice_id disappears AND its
@@ -7,8 +7,12 @@ solicitation_number is also gone (sol# rotations are tolerated — see
 test_no_drops.py).
 """
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from rfp_bundle_shards import BUNDLES_DIR, MANIFEST_NAME, load_bundles  # noqa: E402
 
 BASELINE = Path(__file__).parent / "baseline.json"
 
@@ -16,9 +20,8 @@ BASELINE = Path(__file__).parent / "baseline.json"
 def build_baseline():
     baseline = {"created_at": datetime.now(timezone.utc).isoformat()}
 
-    rfp_path = Path("web/data/rfp_bundles.json")
-    if rfp_path.exists():
-        bundles = json.loads(rfp_path.read_text())
+    if (BUNDLES_DIR / MANIFEST_NAME).exists():
+        bundles = load_bundles()
         nids = sorted(set(b["notice_id"] for b in bundles if b.get("notice_id")))
         # Map each notice_id to its solicitation_number when known. The
         # test treats baseline notice_ids whose sol# still appears in the

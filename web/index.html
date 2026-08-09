@@ -675,7 +675,7 @@
         <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ rfp_text_pipeline.py (daily cron, 00:05 UTC)</div>
         <div style="padding:0.4rem 0.6rem;background:var(--color-surface);border-left:3px solid var(--color-gold);border-radius:0 0.25rem 0.25rem 0;"><strong>Regex classifier</strong> → shall / user / agile / RTM labels</div>
         <div style="padding-left:1rem;color:var(--color-text-muted);font-size:0.75rem;">↓ build_rfp_signals.py + gpt-5.4-mini personnel extraction</div>
-        <div style="padding:0.4rem 0.6rem;background:var(--color-gold);color:#1B4332;border-radius:0.25rem;font-weight:600;">rfp_bundles.json → notice browser</div>
+        <div style="padding:0.4rem 0.6rem;background:var(--color-gold);color:#1B4332;border-radius:0.25rem;font-weight:600;">rfp_bundles/ shards → notice browser</div>
       </div>
     </div>
 
@@ -693,12 +693,29 @@
 <script>
 let DATA = {};
 
-async function loadAll() {
-  const files = ['rfp_signals', 'rfp_bundles'];
-  const results = await Promise.all(
-    files.map(f => fetch(`data/${f}.json`).then(r => r.json()).catch(() => null))
+// The bundle payload lives in data/rfp_bundles/ as numbered shards plus a
+// manifest, because Cloudflare Pages hard-rejects any single file over
+// 25 MiB and one combined file was at 95.6% of that. Shards are fetched in
+// parallel and concatenated back into the single array the rest of the page
+// expects. All of them load up front on purpose: full-text search runs
+// client-side over search_text in a hidden DataTables column, so the search
+// corpus has to be complete before the table is built. See
+// rfp_bundle_shards.py for the writer.
+async function loadBundles() {
+  const manifest = await fetch('data/rfp_bundles/manifest.json').then(r => r.json());
+  const shards = await Promise.all(
+    manifest.shards.map(name => fetch(`data/rfp_bundles/${name}`).then(r => r.json()))
   );
-  files.forEach((f, i) => { DATA[f] = results[i]; });
+  return shards.flat();
+}
+
+async function loadAll() {
+  const [signals, bundles] = await Promise.all([
+    fetch('data/rfp_signals.json').then(r => r.json()).catch(() => null),
+    loadBundles().catch(() => null),
+  ]);
+  DATA.rfp_signals = signals;
+  DATA.rfp_bundles = bundles;
 
   // Populate dynamic RFP date range from actual bundle posted dates
   const rfpDates = (DATA.rfp_bundles || [])

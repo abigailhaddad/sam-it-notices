@@ -5,8 +5,11 @@ Pulls every bundle from R2 under it_rfps/bundles/, tallies the regex labels
 that rfp_text_pipeline.py attaches to each bundle, and writes two JSONs:
 
   - web/data/rfp_signals.json  — overall label share (for the bar panel)
-  - web/data/rfp_bundles.json  — per-bundle metadata + snippet list
-                                 (for the "browse RFPs" viewer)
+  - web/data/rfp_bundles/      — per-bundle metadata + snippet list, sharded
+                                 (for the "browse RFPs" viewer). Sharded
+                                 because Cloudflare Pages hard-rejects any
+                                 single file over 25 MiB — see
+                                 rfp_bundle_shards.py.
 
 Labels currently tracked (see rfp_text_pipeline.classify_bundle_text):
   - mentions_rtm     — "requirements traceability matrix" / "RTM"
@@ -33,10 +36,11 @@ from typing import Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
+from rfp_bundle_shards import BUNDLES_DIR, write_bundle_shards
+
 load_dotenv()
 
 OUT_SIGNALS = Path("web/data/rfp_signals.json")
-OUT_BUNDLES = Path("web/data/rfp_bundles.json")
 R2_PREFIX   = "it_rfps/bundles/"
 
 
@@ -566,15 +570,18 @@ def main():
 
     OUT_SIGNALS.parent.mkdir(parents=True, exist_ok=True)
     OUT_SIGNALS.write_text(json.dumps(signals, indent=2))
-    # The bundles file is large — dump compact (no indent) to keep it small.
-    OUT_BUNDLES.write_text(json.dumps(bundle_rows, separators=(",", ":")))
+    # Compact (no indent) and split across size-budgeted shards, because
+    # Cloudflare Pages refuses any single file over 25 MiB.
+    manifest = write_bundle_shards(bundle_rows)
 
     print(f"wrote {OUT_SIGNALS}  ({signals['total_bundles']} bundles, "
           f"{signals['date_range']['from']} → {signals['date_range']['to']})")
     for lb in signals["labels"]:
         print(f"  {lb['percent']:>5.1f}%  {lb['label']}  ({lb['count']})")
-    size_kb = OUT_BUNDLES.stat().st_size / 1024
-    print(f"wrote {OUT_BUNDLES}  ({len(bundle_rows)} rows, {size_kb:.0f} KB)")
+    largest = max(((BUNDLES_DIR / n).stat().st_size for n in manifest["shards"]),
+                  default=0)
+    print(f"wrote {BUNDLES_DIR}/  ({len(bundle_rows)} rows, "
+          f"{len(manifest['shards'])} shards, largest {largest / 1024:.0f} KB)")
 
 
 if __name__ == "__main__":

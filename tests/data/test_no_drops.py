@@ -4,8 +4,12 @@ Loads baseline.json (committed) and checks every notice_id still exists.
 Run tests/data/update_baseline.py after intentional reductions to reset.
 """
 import json
+import sys
 import pytest
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from rfp_bundle_shards import BUNDLES_DIR, MANIFEST_NAME, load_bundles  # noqa: E402
 
 BASELINE_PATH = Path(__file__).parent / "baseline.json"
 
@@ -26,11 +30,10 @@ def test_no_rfp_bundles_dropped():
     if "rfp_bundles" not in baseline:
         pytest.skip("No rfp_bundles baseline")
 
-    rfp_path = Path("web/data/rfp_bundles.json")
-    if not rfp_path.exists():
-        pytest.skip("rfp_bundles.json not available")
+    if not (BUNDLES_DIR / MANIFEST_NAME).exists():
+        pytest.skip("rfp_bundles shards not available")
 
-    current = json.loads(rfp_path.read_text())
+    current = load_bundles()
     current_ids  = {b["notice_id"] for b in current if b.get("notice_id")}
     current_sols = {(b.get("solicitation_number") or "").strip()
                     for b in current if b.get("solicitation_number")}
