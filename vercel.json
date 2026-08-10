@@ -4,23 +4,25 @@
   "redirects": [
     {
       "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "procurement-methods.vercel.app"
-        }
-      ],
+      "has": [{ "type": "host", "value": "procurement-methods.vercel.app" }],
       "destination": "https://procurement-methods.abigailhaddad.com/",
       "permanent": false
     },
     {
       "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "procurement-methods.vercel.app"
-        }
-      ],
+      "has": [{ "type": "host", "value": "procurement-methods.vercel.app" }],
+      "destination": "https://procurement-methods.abigailhaddad.com/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "sam-it-notices.vercel.app" }],
+      "destination": "https://procurement-methods.abigailhaddad.com/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "sam-it-notices.vercel.app" }],
       "destination": "https://procurement-methods.abigailhaddad.com/:path*",
       "permanent": false
     }
