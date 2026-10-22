@@ -9,4 +9,4 @@ openpyxl
 pytest
 pytest-playwright
 pydantic
-litellm
+litellm==1.106.2
