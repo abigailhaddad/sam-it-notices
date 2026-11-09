@@ -95,8 +95,10 @@ def _filter_personnel(roles: list[dict]) -> list[dict]:
     out = []
     for r in roles:
         title_raw = (r.get("title") or "").strip()
+        # rstrip("(s)") strips any trailing '(', 's' or ')' characters (it turns
+        # "employees" into "employee"), so also test the unstripped title.
         title = title_raw.lower().rstrip("(s)").strip()
-        if title in _GENERIC_TITLES:
+        if title in _GENERIC_TITLES or title_raw.lower() in _GENERIC_TITLES:
             continue
         if _TITLE_NOISE.search(title_raw):
             continue
