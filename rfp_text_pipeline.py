@@ -295,11 +295,18 @@ def iter_opps_in_window(
     max_calls: int,
     naics_codes: list[str],
     start_offset: int = 0,
+    progress: dict | None = None,
 ) -> Iterator[tuple[dict, int]]:
     """Yield each opp + page number across all NAICS codes and year-sized chunks.
 
     Completed (ncode, chunk_from, chunk_to) tuples are recorded in
     completed_chunks.json so re-runs with the same window skip them.
+
+    If `progress` is given, progress["next_offset"] is kept equal to the offset
+    of the next unread page within the (ncode, chunk) currently being drained
+    (0 once that chunk is done), so a caller that stops at the page cap can
+    resume that chunk exactly. Page numbers are cumulative across chunks and
+    cannot be used for this.
     """
     done_chunks: set[tuple] = set()
     if DONE_CHUNKS_JSON.exists():
@@ -331,7 +338,11 @@ def iter_opps_in_window(
                     print(f"  NAICS {ncode} {chunk_from}→{chunk_to}: {naics_total:,} opps")
                 if not opps:
                     _save_done(ncode, chunk_from, chunk_to)
+                    if progress is not None:
+                        progress["next_offset"] = 0
                     break
+                if progress is not None:
+                    progress["next_offset"] = offset + 1000 if len(opps) >= 1000 else 0
                 for opp in opps:
                     yield opp, page
                 if len(opps) < 1000:
@@ -628,9 +639,10 @@ def main() -> None:
     pages = 0
     scanned = kept_new = skipped_processed = skipped_type = skipped_naics = 0
     sam_error: str | None = None
+    progress: dict = {}
 
     try:
-        for opp, page_no in iter_opps_in_window(session, posted_from, posted_to, args.max_api_calls, list(naics_prefixes), start_offset=start_offset):
+        for opp, page_no in iter_opps_in_window(session, posted_from, posted_to, args.max_api_calls, list(naics_prefixes), start_offset=start_offset, progress=progress):
             scanned += 1
             pages = page_no
             nid = opp.get("noticeId")
@@ -672,7 +684,11 @@ def main() -> None:
     full_drain = (sam_error is None
                   and pages > 0
                   and pages < args.max_api_calls)  # exited via len < 1000
-    final_offset = start_offset + pages * 1000
+    # Resume point inside the chunk being drained, not start_offset + pages*1000:
+    # `pages` counts every page across all NAICS codes and chunks this run, but the
+    # saved offset is applied only to the first chunk not yet done on the next run.
+    # (A SAM error raised before the next page is read leaves next_offset at that page.)
+    final_offset = progress.get("next_offset", start_offset)
     if full_drain:
         _save_json(LAST_DATE_JSON, posted_to.isoformat())
         _clear_scan_cursor()
