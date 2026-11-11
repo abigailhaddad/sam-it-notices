@@ -110,3 +110,28 @@ def test_last_shard_is_full_text_searchable(page_loaded):
     assert matched >= 1, (
         f"Searching for {row['solicitation_number']!r} (last shard) matched no rows"
     )
+
+
+@pytest.mark.frontend
+def test_rc_date_range_matches_data_file(page_loaded):
+    """The '#rcDateRange' label must state the real first and last posted date.
+
+    The label is computed in the browser from the loaded notices. Here the
+    expected dates come independently from the shard files on disk (glob, not
+    the manifest), so a bug that drops shards, mis-sorts, or reads the wrong
+    field would show a range narrower or different from the data.
+    """
+    posted = []
+    for shard in sorted(BUNDLES_DIR.glob("shard-*.json")):
+        posted += [r["posted_date"] for r in json.loads(shard.read_text())
+                   if r.get("posted_date")]
+    assert posted, "no posted_date values in any shard"
+    assert all(len(d) == 10 and d[4] == "-" and d[7] == "-" for d in posted), \
+        "posted_date is not all ISO YYYY-MM-DD, so string min/max would be wrong"
+    earliest, latest = min(posted), max(posted)
+
+    # text_content, not inner_text: the header is CSS text-transform:uppercase
+    label = page_loaded.locator("#rcDateRange").text_content()
+    assert label.strip() == f"· notices posted {earliest} to {latest}", (
+        f"label {label!r} != data range {earliest} to {latest}"
+    )
