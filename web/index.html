@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How the Federal Government Buys IT Services</title>
+  <meta name="description" content="Each row is one SAM.gov solicitation notice with attachment text extracted daily, for federal IT procurement (NAICS 518210, 541330, 541511 and others). Filter by type, department, NAICS, set-aside or date." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="How the Federal Government Buys IT Services" />
+  <meta property="og:description" content="Each row is one SAM.gov solicitation notice with attachment text extracted daily, for federal IT procurement." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231B4332'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-size='15' font-weight='700' text-anchor='middle' fill='%23C9A84C'%3EIT%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -99,6 +104,10 @@
       color: var(--color-accent);
       border-bottom-color: var(--color-accent);
     }
+    table.dataTable tbody td:nth-child(2) { white-space: nowrap; }
+    table.dataTable tbody td .rfp-badge-amber, table.dataTable tbody td .rfp-badge-green, table.dataTable tbody td .rfp-badge-surface, table.dataTable tbody td .rfp-badge-muted { white-space: normal; }
+    .table-scroll-hint { display: none; font-size: 0.8125rem; color: var(--color-text-muted); margin: 0 0 0.5rem; }
+    @media (max-width: 700px) { .table-scroll-hint { display: block; } }
     .tab-panel { display: none; }
     .tab-panel[aria-hidden="false"] { display: block; }
 
@@ -184,7 +193,7 @@
       display: inline-block;
       padding: 0.125rem 0.5rem;
       border-radius: 999px;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 600;
       background: var(--color-accent);
       color: white;
@@ -195,10 +204,10 @@
     .chip.chip-agile     { background: #C9A84C; color: #1B4332; }
     .chip.chip-rtm       { background: #374151; }
 
-    .rfp-badge-green  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#d1ead9; color:#1B4332; margin:1px; white-space:nowrap; }
-    .rfp-badge-amber  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#faedc4; color:#7a5500; margin:1px; white-space:nowrap; }
-    .rfp-badge-surface{ display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#e5e7eb; color:#374151; margin:1px; white-space:nowrap; }
-    .rfp-badge-muted  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.68rem; font-weight:600; background:#f3f4f6; color:#6b7280; margin:1px; white-space:nowrap; }
+    .rfp-badge-green  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.75rem; font-weight:600; background:#d1ead9; color:#1B4332; margin:1px; white-space:nowrap; }
+    .rfp-badge-amber  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.75rem; font-weight:600; background:#faedc4; color:#7a5500; margin:1px; white-space:nowrap; }
+    .rfp-badge-surface{ display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.75rem; font-weight:600; background:#e5e7eb; color:#374151; margin:1px; white-space:nowrap; }
+    .rfp-badge-muted  { display:inline-block; padding:0.1rem 0.4rem; border-radius:3px; font-size:0.75rem; font-weight:600; background:#f3f4f6; color:#6b7280; margin:1px; white-space:nowrap; }
 
 
     /* ── RFP text modal ────────────────────────────────────────────────── */
@@ -599,7 +608,7 @@
 
     <!-- Reactive summary cards -->
     <div class="rfp-cards-row" id="rfpCards" style="display:none;">
-      <div style="width:100%;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin-bottom:0.25rem;">RFP signals <span id="rcDateRange"></span></div>
+      <div style="width:100%;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);margin-bottom:0.25rem;">RFP signals <span id="rcDateRange"></span></div>
       <div class="rfp-card">
         <div class="rfp-card-n" id="rcTotal">—</div>
         <div class="rfp-card-label">Notices</div>
@@ -614,11 +623,11 @@
       </div>
       <div class="rfp-card rfp-card-clickable" data-label-key="has_agile_vocab" data-chip="agile">
         <div class="rfp-card-n" id="rcAgile">—</div>
-        <div class="rfp-card-label">agile vocab<br><span style="font-size:0.65rem;font-weight:400;">sprint·scrum·kanban·backlog</span></div>
+        <div class="rfp-card-label">agile vocab<br><span style="font-size:0.75rem;font-weight:400;">sprint·<wbr>scrum·<wbr>kanban·<wbr>backlog</span></div>
       </div>
       <div class="rfp-card rfp-card-clickable" data-label-key="mentions_rtm" data-chip="RTM">
         <div class="rfp-card-n" id="rcRtm">—</div>
-        <div class="rfp-card-label">RTM<br><span style="font-size:0.65rem;font-weight:400;">requirements traceability</span></div>
+        <div class="rfp-card-label">RTM<br><span style="font-size:0.75rem;font-weight:400;">requirements traceability</span></div>
       </div>
     </div>
 
@@ -642,6 +651,7 @@
     </div>
 
     <!-- DataTable -->
+    <p class="table-scroll-hint">Scroll the table sideways to see department, set-aside, labels and data columns.</p>
     <div style="overflow-x:auto;">
       <table id="rfpTable" class="display" style="width:100%">
         <thead></thead>
@@ -1195,6 +1205,13 @@ function setupRfpBrowser() {
   (DATA.rfp_bundles || []).forEach(b => { rfpDetailByNid[b.notice_id] = b; });
 
   const tableData = bundles.map((b, i) => RFP_COLS.map(c => c.render(b, i)));
+
+  // Show the span of posted dates in the notices below, next to the "RFP signals" label.
+  const postedDates = bundles.map(b => b.posted_date || b.date || '').filter(Boolean).sort();
+  if (postedDates.length) {
+    document.getElementById('rcDateRange').textContent =
+      '\u00b7 notices posted ' + postedDates[0] + ' to ' + postedDates[postedDates.length - 1];
+  }
 
   rfpDT = $('#rfpTable').DataTable({
     data: tableData,
